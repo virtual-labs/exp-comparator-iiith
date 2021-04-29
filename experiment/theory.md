@@ -12,24 +12,26 @@ The operation of a single bit digital comparator can be expressed as a truth tab
 
 The operation of a two bit digital comparator cannot be expressed as a truth table: 
 
-Inputs 	Outputs
-A<sub>1</sub>  A<sub>0</sub  B<sub>1</sub>  B<sub>0</sub>     A < B   A = B   A > B
-0 		0 		0 	    	0 		0 	1 	0
-0 		0 		0 		1 		1 	0 	0
-0 		0 		1 		0 		1 	0 	0
-0 		0 		1 		1 		1 	0 	0
-0 		1 		0 		0 		0 	0 	1
-0 		1 		0 		1 		0 	1 	0
-0 		1 		1 		0 		1 	0 	0
-0 		1 		1 		1 		1 	0 	0
-1 		0 		0 		0 		0 	0 	1
-1 		0 		0 		1 		0 	0 	1
-1 		0 		1 		0 		0 	1 	0
-1 		0 		1 		1 		1 	0 	0
-1 		1 		0 		0 		0 	0 	1
-1 		1 		0 		1 		0 	0 	1
-1 		1 		1 		0 		0 	0 	1
-1 		1 		1 		1 		0 	1 	0
+**Inputs 	Outputs**
+
+|A<sub>1</sub>|A<sub>0</sub | B<sub>1</sub>|  B<sub>0</sub> | A < B| A = B| A > B|
+|-------------|-------------|--------------|----------------|------|------|------|
+|0 	      |	0 	    |	0 	   |  	0 	    |	0  |	1 |	0|
+|0 	      |	0 	    | 	0 	   |	1 	    |	1  |	0 |	0|
+|0 	      |	0 	    |	1 	   |	0 	    |	1  |	0 |	0|
+|0 	      |	0 	    |	1 	   |	1 	    |	1  |	0 |	0|
+|0 	      |	1 	    |	0 	   |	0 	    |	0  |	0 |	1|
+|0 	      |	1 	    |	0 	   |	1 	    |	0  |	1 |	0|
+|0 	      |	1 	    |	1 	   |	0 	    |	1  |	0 |	0|
+|0 	      |	1 	    |	1 	   |	1 	    |	1  |	0 |	0|
+|1 	      |	0 	    |	0 	   |	0 	    |	0  | 	0 |	1|
+|1 	      |	0 	    |	0 	   |	1 	    |	0  |	0 |	1|
+|1 	      |	0 	    |	1 	   |	0 	    |	0  |	1 |	0|
+|1 	      |	0 	    |	1 	   |	1 	    |	1  |	0 |	0|
+|1 	      |	1 	    | 	0 	   |	0 	    |	0  |	0 |	1|
+|1 	      |	1 	    |	0 	   |	1 	    |	0  |	0 |	1|
+|1 	      |	1 	    |	1 	   |	0 	    |	0  |	0 |	1|
+|1 	      |	1 	    |	1 	   |	1 	    |	0  |	1 |	0|
 
 
 Following is the circuit digram for the two bit comparator : 
@@ -56,9 +58,10 @@ Since the numbers are binary, the digits are either 0 or 1 and the boolean funct
 
 <img src="images/comp_form1.png">
 
+
 x<sub>i</sub> is 1 only if A<sub>i</sub> and B<sub>i</sub> are equal.
 
-For the equality of A and B, all x<sub>i</sub> variables (for i=0,1,2,3) must be 1.
+For the equality of A and  B, all x<sub>i</sub> variables (for i=0,1,2,3) must be 1.
 
 So the quality condition of A and B can be implemented using the AND operation as
 
