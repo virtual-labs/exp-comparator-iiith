@@ -14,7 +14,7 @@ The operation of a two bit digital comparator cannot be expressed as a truth tab
 
 **Inputs 	Outputs**
 
-|A<sub>1</sub>|A<sub>0</sub | B<sub>1</sub>|  B<sub>0</sub> | A < B| A = B| A > B|
+|A<sub>1</sub>|A<sub>0</sub> | B<sub>1</sub>|  B<sub>0</sub> | A < B| A = B| A > B|
 |-------------|-------------|--------------|----------------|------|------|------|
 |0 	      |	0 	    |	0 	   |  	0 	    |	0  |	1 |	0|
 |0 	      |	0 	    | 	0 	   |	1 	    |	1  |	0 |	0|
@@ -77,6 +77,8 @@ In order to manually determine the greater of two binary numbers, we inspect the
 This sequential comparison can be expressed logically as:
 
 <img src="images/comp_form2.png">  
+
+<br/>
 
 <img src="images/comp_form3.png">  
 
