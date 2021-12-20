@@ -80,6 +80,7 @@ This sequential comparison can be expressed logically as:
 
 <br/>
 
+
 <img src="images/comp_form3.png">  
 
 (A>B) and (A < B) are output binary variables, which are equal to 1 when A>B or A<B respectively.
