@@ -1,6 +1,6 @@
 import * as gatejs from "./gate.js";
-import {wireColours} from "./layout.js";
-
+import { wireColours } from "./layout.js";
+'use strict';
 let num_wires = 0;
 
 document.getScroll = function () {
@@ -32,40 +32,43 @@ export const jsPlumbInstance = jsPlumbBrowserUI.newInstance({
     connectionsDetachable: false,
 });
 
-export const bindEvent1 = function () {
+// This is an event listener for establishing connections between gates
+export const connectGate = function () {
     jsPlumbInstance.bind("beforeDrop", function (data) {
-        let endpoint = data.connection.endpoints[0];
-        let dropEndpoint = data.dropEndpoint;
+        const fromEndpoint = data.connection.endpoints[0];
+        const toEndpoint = data.dropEndpoint;
 
-        const start_uuid = endpoint.uuid.split(":")[0];
-        const end_uuid = dropEndpoint.uuid.split(":")[0];
-        
-        if (endpoint.elementId == dropEndpoint.elementId) {
+        const start_uuid = fromEndpoint.uuid.split(":")[0];
+        const end_uuid = toEndpoint.uuid.split(":")[0];
+
+        if (fromEndpoint.elementId === toEndpoint.elementId) {
             return false;
         }
 
-        if (start_uuid == "input" && end_uuid == "input") {
+        if (start_uuid === "input" && end_uuid === "input") {
             return false;
-        } else if (start_uuid == "output" && end_uuid == "output") {
+        } else if (start_uuid === "output" && end_uuid === "output") {
             return false;
         } else {
-            jsPlumbInstance.connect({ uuids: [endpoint.uuid, dropEndpoint.uuid], paintStyle:{ stroke: wireColours[num_wires], strokeWidth:4 }});
+            console.log("connected");
+            jsPlumbInstance.connect({
+                uuids: [fromEndpoint.uuid, toEndpoint.uuid],
+                paintStyle: { stroke: wireColours[num_wires], strokeWidth: 4 },
+            });
             num_wires++;
             num_wires = num_wires % wireColours.length;
-            if (start_uuid == "output") {
-                let input = gatejs.gates[endpoint.elementId];
+            if (start_uuid === "output") {
+                let input = gatejs.gates[fromEndpoint.elementId];
                 input.isConnected = true;
-                gatejs.gates[dropEndpoint.elementId].addInput(input);
-            } else if (end_uuid == "output") {
-                let input = gatejs.gates[dropEndpoint.elementId];
+                gatejs.gates[toEndpoint.elementId].addInput(input);
+            } else if (end_uuid === "output") {
+                let input = gatejs.gates[toEndpoint.elementId];
                 input.isConnected = true;
-                gatejs.gates[endpoint.elementId].addInput(input);
+                gatejs.gates[fromEndpoint.elementId].addInput(input);
             }
-
-            // return true;
         }
     });
-}
+};
 
 
 
@@ -79,12 +82,12 @@ export function registerGate(id, gate) {
     const gateType = id.split("-")[0];
 
     if (
-        gateType == "AND" ||
-        gateType == "OR" ||
-        gateType == "XOR" ||
-        gateType == "XNOR" ||
-        gateType == "NAND" ||
-        gateType == "NOR"
+        gateType === "AND" ||
+        gateType === "OR" ||
+        gateType === "XOR" ||
+        gateType === "XNOR" ||
+        gateType === "NAND" ||
+        gateType === "NOR"
     ) {
         gate.addInputPoints(
             jsPlumbInstance.addEndpoint(element, {
@@ -113,7 +116,7 @@ export function registerGate(id, gate) {
                 uuid: "output:0:" + id,
             })
         );
-    } else if (gateType == "NOT") {
+    } else if (gateType === "NOT") {
         gate.addInputPoints(
             jsPlumbInstance.addEndpoint(element, {
                 anchor: [0, 0.5, -1, 0, -7, 0],
@@ -132,7 +135,7 @@ export function registerGate(id, gate) {
                 uuid: "output:0:" + id,
             })
         );
-    } else if (gateType == "Input") {
+    } else if (gateType === "Input") {
         gate.addOutputPoints(
             jsPlumbInstance.addEndpoint(element, {
                 anchor: [1, 0.5, 1, 0, 7, 0],
@@ -142,7 +145,7 @@ export function registerGate(id, gate) {
                 uuid: "output:0:" + id,
             })
         );
-    } else if (gateType == "Output") {
+    } else if (gateType === "Output") {
         gate.addInputPoints(
             jsPlumbInstance.addEndpoint(element, {
                 anchor: [0, 0.5, -1, 0, -7, 0],
@@ -155,10 +158,10 @@ export function registerGate(id, gate) {
     }
 }
 export function initComparator() {
-    let ids = ["Input-0", "Input-1", "Input-2", "Input-3", "Output-4", "Output-5", "Output-6"]; // [A B Sum Carry Out]
-    let types = ["Input", "Input", "Input", "Input" ,"Output", "Output", "Output"];
-    let names = ["A0", "A1", "B0", "B1", "A&gt;B", "A&lt;B", "A=B"];
-    let positions = [
+    const ids = ["Input-0", "Input-1", "Input-2", "Input-3", "Output-4", "Output-5", "Output-6"]; // [A B Sum Carry Out]
+    const types = ["Input", "Input", "Input", "Input", "Output", "Output", "Output"];
+    const names = ["A0", "A1", "B0", "B1", "A&gt;B", "A&lt;B", "A=B"];
+    const positions = [
         { x: 40, y: 100 },
         { x: 40, y: 300 },
         { x: 40, y: 500 },
@@ -174,7 +177,7 @@ export function initComparator() {
         const component = gate.generateComponent();
         const parent = document.getElementById("working-area");
         parent.insertAdjacentHTML('beforeend', component);
-        gate.registerComponent("working-area",positions[i].x, positions[i].y);;
+        gate.registerComponent("working-area", positions[i].x, positions[i].y);;
     }
 }
 
@@ -186,9 +189,13 @@ export function refreshWorkingArea() {
     gatejs.clearGates();
 }
 
+window.getInfo = function () {
+    console.log(gatejs.gates);
+}
 
 
-window.currentTab = "Task1";
-bindEvent1();
+
+window.currentTab = "task1";
+connectGate();
 refreshWorkingArea();
 initComparator();
