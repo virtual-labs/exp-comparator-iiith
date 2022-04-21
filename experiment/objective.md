@@ -1,1 +1,0 @@
-1.  The objective of this experiment is to make 2 bits comparator and to understand its working.
