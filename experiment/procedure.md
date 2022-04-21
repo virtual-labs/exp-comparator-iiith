@@ -1,6 +1,4 @@
-1. With The help of Theory Page , try to build the Circuit.  
-2. First of all build 2 bits comparator.  
-3. Then analyze its output and compute the truth table.  
-4. If You are unable to make it , load or export the circuit component directly and use it.  
-5. There is an import feature, which lets you construct building blocks. Click on import and then click on circuit board to see the imported block. For more details, refer import section in manual.  
-
+1. Firstly learn everything from the 'Demo' section.  
+2. Then, test your understanding about comparator circuit in the 'Pretest' section.
+3. Then in the 'Practice' section ,make a 2-bit comparator circuit using logic gates and test it with different inputs.  
+4. After that, test your understanding of the experiment in the 'Posttest' section.
