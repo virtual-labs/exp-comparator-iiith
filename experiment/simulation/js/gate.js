@@ -221,11 +221,11 @@ export function checkConnections() {
     for (let gateId in gates) {
         const gate = gates[gateId];
         if (gate.inputPoints.length != gate.inputs.length) {
-            console.log(gate);
+            // console.log(gate);
             correctConnection = false;
         } else if (gate.isConnected === false && gate.isOutput === false) {
             correctConnection = false;
-            console.log(gate);
+            // console.log(gate);
         }
     }
     if (correctConnection) {

@@ -1,5 +1,5 @@
 import { simulate, deleteElement } from "./gate.js";
-import {connectGate, unbindEvent, initComparator,refreshWorkingArea} from "./main.js";
+import { connectGate, unbindEvent, initComparator, refreshWorkingArea } from "./main.js";
 
 "use strict";
 // Wires Colours
@@ -70,11 +70,12 @@ function changeTabs(e) {
     connectGate();
     refreshWorkingArea();
     initComparator();
-    window.simulate= simulate
+    window.simulate = simulate
   }
   updateInstructions();
   updateToolbar();
   clearObservations();
+  resize();
 
 }
 
@@ -112,18 +113,36 @@ function clearObservations() {
 
 }
 
+// Instruction box
+const instructionBox = document.getElementsByClassName("instructions-box")[0];
+instructionBox.addEventListener("click", (e) => {
+  instructionBox.classList.toggle("expand");
+});
+
 // Making webpage responsive
 
 // Dimensions of working area
-let circuitBoard = document.getElementById("circuit-board");
+const circuitBoard = document.getElementById("circuit-board");
 // Distance of working area from top
-let circuitBoardTop = circuitBoard.offsetTop;
+const circuitBoardTop = circuitBoard.offsetTop;
 // Full height of window
-let windowHeight = window.innerHeight;
-let width = window.innerWidth;
+const windowHeight = window.innerHeight;
+const width = window.innerWidth;
 if (width < 1024) {
   circuitBoard.style.height = 600 + "px";
 } else {
   circuitBoard.style.height = windowHeight - circuitBoardTop - 20 + "px";
 }
 
+function resize() {
+  const circuitBoard = document.getElementById("circuit-board");
+  const sidePanels = document.getElementsByClassName("v-datalist-container");
+
+  if (width >= 1024) {
+    for (let i = 0; i < sidePanels.length; i++) {
+      sidePanels[i].style.height = circuitBoard.style.height;
+    }
+  }
+}
+
+resize();

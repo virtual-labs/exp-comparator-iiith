@@ -14,7 +14,7 @@
             "difficulty": "advanced"
         },
         {
-            "question": "2. A comparator circuit ca be used to:",
+            "question": "2. A comparator circuit can be used to:",
             "answers": {
                 "a": "Mark the instant when an arbitrary waveform attains some reference level",
                 "b": "Mark the instant when the input voltage becomes constant",

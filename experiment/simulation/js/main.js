@@ -50,7 +50,7 @@ export const connectGate = function () {
         } else if (start_uuid === "output" && end_uuid === "output") {
             return false;
         } else {
-            console.log("connected");
+            // console.log("connected");
             jsPlumbInstance.connect({
                 uuids: [fromEndpoint.uuid, toEndpoint.uuid],
                 paintStyle: { stroke: wireColours[num_wires], strokeWidth: 4 },
@@ -189,9 +189,9 @@ export function refreshWorkingArea() {
     gatejs.clearGates();
 }
 
-window.getInfo = function () {
-    console.log(gatejs.gates);
-}
+// window.getInfo = function () {
+//     console.log(gatejs.gates);
+// }
 
 
 

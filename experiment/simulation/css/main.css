@@ -61,7 +61,7 @@ text {
 }
 
 .nor {
-  background-image: url("../images/NOR.svg");
+  background-image: url("../images/nor.svg");
 }
 
 .high {
@@ -208,7 +208,7 @@ svg.wire path {
   height: 80px;
   border-radius: 0.75em;
   border: 0.2rem solid rgb(98, 178, 235);
-  margin: 1rem 0.5rem;
+  margin: 0.5rem 0.5rem;
   font-weight: bold;
   font-size: 0.8rem;
   text-align: center;
@@ -248,4 +248,20 @@ svg.wire path {
   font-size: 1.2rem;
   color: rgb(228, 23, 23);
   font-weight: bold;
+}
+
+/* for dropping instruction box  */
+
+.instructions-box {
+  max-height: 70px;
+  overflow: hidden;
+  transition: all .5s ease;
+}
+
+.instructions-box.expand {
+  max-height: 400px;
+}
+
+.v-instruction-container {
+  justify-content: flex-start;
 }
