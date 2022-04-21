@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.7-b/css/style.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/MotionPathPlugin.min.js"></script>
+    <title>
+        Comparator: Demo
+    </title>
+</head>
+
+<body>
+    <div class="container" style="margin-top: 1%;">
+        
+        <div class="columns is-centered">
+            <div class="column">
+                <div class="v-instruction-container instructions-box">
+                    <div class="v-instruction-title" id="TaskTitle">2-bit comparator</div>
+                    <div class="v-instruction-text" id="TaskDescription">
+                        Simulation of a 2-bit binary comparator built using logic gates.
+                        <br>
+                    </div>
+                    <div>
+                        <br>
+                        <p>Start- Starts the simulation after the inputs are properly selected. Default speed is 1x.</p>
+                        <p>Select the speed through dropdown menu</p>
+                        <p>Reset - Resets the simulation</p>
+                        <p>
+                            <br>
+                            Click on the green input bits to set their values.
+                            <br>
+                            <br>
+                            <svg>
+                                <rect x="0" y="0" width="30" height="30"
+                                    style="fill:#29e;fill-opacity:1;stroke-opacity:1" />
+                                <text font-size="0.9em" x="50" y="20" fill="black">bit = 1</text>
+                                <rect x="0" y="60" width="30" height="30"
+                                    style="fill:#eeeb22;fill-opacity:1;stroke-opacity:1" />
+                                <text font-size="0.9em" x="50" y="80" fill="black">bit = 0</text>
+                            </svg>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="columns is-centered">
+        <div class="column" style="text-align: center;">
+            <div class="v-select">
+                <select  autocomplete="off" name="speed" onchange="SetSpeed(this.value)" id="speed">
+                  <option value="1" selected="selected">1x</option>
+                  <option value="2">2x</option>
+                  <option value="4">4x</option>
+                </select>
+            </div>
+            <button class="v-button" id="currentwork" onclick="WorkCircuit()">Start</button>
+            <a href="demo.html"><button class="v-button">Reset simulation</button></a>
+        </div>
+    </div>
+    <div class="columns is-centered is-flex is-flex-direction-row is-flex-wrap-wrap is-align-content-start">
+        <div class="column is-9-desktop is-12-tablet is-12-mobile">
+            <div id="circuit-board">
+                <div id="working-area">
+
+                    <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="130%"
+                        viewBox="0 0 1025 1000 ">
+
+                        <path id="path1" fill="none" stroke="currentColor" stroke-width="3" 
+                        d="M 20,20 h 160 v 30 h 80" />
+                            
+                        <path id="path2" fill="none" stroke="currentColor" stroke-width="3"
+                        d="M 20,120 h 160 v -30 h 80" />
+
+                        <path id="path3" fill="none" stroke="currentColor" stroke-width="3"
+                        d="M 20,220 h 160 v 30 h 80" />
+                            
+                        <path id="path4" fill="none" stroke="currentColor" stroke-width="3"
+                        d="M 20,320 h 160 v -30 h 80" />
+                        
+                        <path id="path5" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 20 20 h 80 v 400" />
+
+                        <path id="path6" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 20 320 h 130 v 100" />
+                            
+                        <path id="path7" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 100 471 v 100 h 160" />
+                        
+                        <path id="path8" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 20 120 h 50 v 420 h 190" />
+
+                        <path id="path9" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 20 220 h 30 v 390 h 210" />
+
+                        <path id="path10" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 150 471 v 169 h 110" />
+                        
+                        <path id="path11" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 100 471 v 154 h 160" />
+
+                        <path id="path12" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 20 220 h 30 v 460 h 210" />
+                        
+
+                        <path id="path13" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 20 120 h 50 v 575 h 190" />
+                        
+
+                        <path id="path14" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 338 70 h 110 v 85 h 50" />
+
+                        <path id="path15" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 338 270 h 110 v -85 h 50" />
+
+                        <path id="path16" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 346 555 h 110 v 50 h 50" />
+
+                        <path id="path17" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 346 625 h 110 h 50" />
+
+                        <path id="path18" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 346 695 h 110 v -50 h 50" />
+
+                        <path id="path19" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 562 170 h 110 v 210 h 50 h 16" />
+
+                        <path id="path20" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 578 625 h 94 v -210 h 50 h 16" />
+
+                        <path id="path21" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 578 625 h 334" />
+
+                        <path id="path22" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 562 170 h 344" />
+
+                        <path id="path23" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 802 397.5 h 110" />
+
+                        
+                        <path id="path24" fill="none" stroke="currentColor" stroke-width="3"
+                            d="M 150 471 v 239 h 110" />
+                        <g id="NOT">
+                            <path id="path1NOT" fill="#29e" stroke="currentColor" stroke-width="3"
+                                d="M 80 420 L 120 420 L 100 455 L 80 420" />
+                            <circle id="circle1NOT" fill="white" cx="100" cy="463" r="8" stroke="black" stroke-width="3"
+                                fill="none" />               
+                        </g>
+                        <g id="NOT2">
+                            <path id="path2NOT" fill="#29e" stroke="currentColor" stroke-width="3"
+                                d="M 130 420 L 170 420 L 150 455 L 130 420" />
+                            <circle id="circle1NOT" fill="white" cx="150" cy="463" r="8" stroke="black" stroke-width="3"
+                                fill="none" />               
+                        </g>
+                        <g id="AND1">
+                            <path id="path1AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                                d="M 260 531 v 50 h 50 Q 345 556 310 531 h -50" />
+                        </g>
+                        <g id="AND2">
+                            <path id="path2AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                                d="M 260 601 v 50 h 50 Q 345 626 310 601 h -50" />
+                        </g>
+                        <g id="AND3">
+                            <path id="path1AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                                d="M 260 671 v 50 h 50 Q 345 696 310 671 h -50" />
+                        </g>
+                        <g id="AND4">
+                            <path id="path1AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                                d="M 498 145 v 50 h 50 Q 573 170 548 145 h -50" />
+                        </g>
+                        <g id="AND5">
+                            <path id="path1AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                                d="M 506 600 v 50 h 50 Q 581 625 556 600 h -50" />
+                        </g>
+                        
+                        <g id="XNOR1">
+                            <path id="path1OR" stroke="currentColor" fill="#29e" stroke-width="3"
+                                d="M 240 20 Q 290 70 240 120 Q 291 70 240 20 M 245 20 Q 295 70 245 120 Q 395 70 245 20" />
+                        </g>
+                        <g id="XNOR2">
+                            <path id="path1OR" stroke="currentColor" fill="#29e" stroke-width="3"
+                                d="M 240 220 Q 290 270 240 320 Q 291 270 240 220 M 245 220 Q 295 270 245 320 Q 395 270 245 220" />
+                        </g>
+
+                        <g id="XOR">
+                            <path id="path1OR" stroke="currentColor" fill="#29e" stroke-width="3"
+                                d="M 722 365 Q 772 397.5 722 430 Q 773 397.5 722 365 M 727 365 Q 777 397.5 727 430 Q 877 397.5 727 365" />
+                        </g>
+                        <circle id="input1" cx="20" cy="20" r="15" onclick="input1()"
+                            style="fill:green;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="input2" cx="20" cy="120" r="15" onclick="input2()"
+                            style="fill:green;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="input3" cx="20" cy="220" r="15" onclick="input3()"
+                            style="fill:green;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="input4" cx="20" cy="320" r="15" onclick="input4()"
+                            style="fill:green;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="output1" cx="912" cy="170" r="15" 
+                            style="fill:green;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="output2" cx="912" cy="397.5" r="15" 
+                            style="fill:green;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="output3" cx="912" cy="625" r="15" 
+                            style="fill:green;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="select" cx="330" cy="70" r="8"
+                            style="fill:white;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="select" cx="330" cy="270" r="8"
+                            style="fill:white;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="select" cx="338" cy="555" r="8"
+                            style="fill:white;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="select" cx="338" cy="625" r="8"
+                            style="fill:white;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="select" cx="338" cy="695" r="8"
+                            style="fill:white;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <circle id="select" cx="578" cy="625" r="8"
+                            style="fill:white;stroke:rgb(68, 68, 119);stroke-width:3;fill-opacity:1;stroke-opacity:1" />
+                        <text font-size="1em" x="10" y="50" fill="black">A1</text>
+                        <text font-size="1em" x="10" y="150" fill="black">B1</text>
+                        <text font-size="1em" x="10" y="250" fill="black">B0</text>
+                        <text font-size="1em" x="10" y="350" fill="black">A0</text>
+                        <text font-size="1em" x="932" y="173" fill="black">A = B</text>
+                        <text font-size="1em" x="932" y="400.5" fill="black">A > B</text>
+                        <text font-size="1em" x="932" y="628" fill="black">B > A</text>
+                        <text font-size="1em" x="755" y="400" fill="black">XOR</text>
+                        <text font-size="1em" x="510" y="180" fill="black">AND</text>
+                        <text font-size="1em" x="272" y="80" fill="black">XNOR</text>
+                        <text font-size="1em" x="272" y="280" fill="black">XNOR</text>
+                        <text font-size="1em" x="275" y="560" fill="black">NAND</text>
+                        <text font-size="1em" x="275" y="630" fill="black">NAND</text>
+                        <text font-size="1em" x="515" y="630" fill="black">NAND</text>
+                        <text font-size="1em" x="275" y="700" fill="black">NAND</text>\
+                    </svg>
+
+                </div>
+            </div>
+        </div>
+        <div class="column is-3-desktop is-12-tablet is-12-mobile">
+            <div class="v-datalist-container components-list">
+                <div class="v-datalist-title">Observations</div>
+                <div class="v-datalist-row">
+                    <div id="Observations">
+                    </div>
+                    <div id="result"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="menu">
+        <ul class="menu-options">
+            <li class="menu-option">Delete</li>
+            <li class="menu-option">Cancel</li>
+        </ul>
+    </div>
+    <script src="js/animation.js"></script>
+
+</body>
+
+
+</html>
