@@ -78,6 +78,46 @@ text {
   background-position: center;
 }
 
+
+.column {
+  text-align: center;
+}
+
+.color-white{
+  fill: white;
+  stroke:rgb(68, 68, 119);
+  stroke-width:3;
+  fill-opacity:1;
+  stroke-opacity:1;
+}
+
+.color-blue{
+  
+  fill:#29e;
+  stroke:rgb(68, 68, 119);
+  stroke-width:3;
+  fill-opacity:1;
+  stroke-opacity:1;
+}
+
+.color-green{
+  
+  fill:green;
+  stroke:rgb(68, 68, 119);
+  stroke-width:3;
+  fill-opacity:1;
+  stroke-opacity:1;
+}
+
+.color-yellow{
+  
+  fill:#eeeb22;
+  stroke:rgb(68, 68, 119);
+  stroke-width:3;
+  fill-opacity:1;
+  stroke-opacity:1;
+}
+
 .low {
   text-align: center;
   display: inline-block;

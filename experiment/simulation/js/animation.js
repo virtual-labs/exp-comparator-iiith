@@ -1,3 +1,4 @@
+'use strict'
 // Dimensions of working area
 const circuitBoard = document.getElementById("circuit-board");
 const sidePanels = document.getElementsByClassName("v-datalist-container");
@@ -18,7 +19,6 @@ const instructionBox = document.getElementsByClassName("instructions-box")[0];
 instructionBox.addEventListener("click", (e) => {
   instructionBox.classList.toggle("expand");
 });
-
 
 
 const svg = document.querySelector(".svg");
@@ -140,18 +140,18 @@ gsap.set(newCircle23, {
     attr: { cx: 150, cy: 471, r: 15, fill: "#FF0000" }
 });
 
-let textA0 = document.createElementNS(svgns, "text");
-let textA1 = document.createElementNS(svgns, "text");
-let textB0 = document.createElementNS(svgns, "text");
-let textB1 = document.createElementNS(svgns, "text");
+let texta0 = document.createElementNS(svgns, "text");
+let texta1 = document.createElementNS(svgns, "text");
+let textb0 = document.createElementNS(svgns, "text");
+let textb1 = document.createElementNS(svgns, "text");
 let textOutput1 = document.createElementNS(svgns, "text");
 let textOutput2 = document.createElementNS(svgns, "text");
 let textOutput3 = document.createElementNS(svgns, "text");
 
-textA0.textContent = 2;
-textA1.textContent = 2;
-textB0.textContent = 2;
-textB1.textContent = 2;
+texta0.textContent = 2;
+texta1.textContent = 2;
+textb0.textContent = 2;
+textb1.textContent = 2;
 textOutput1.textContent = 2;
 textOutput2.textContent = 2;
 textOutput3.textContent = 2;
@@ -181,19 +181,19 @@ svg.appendChild(newCircle21);
 svg.appendChild(newCircle22);
 svg.appendChild(newCircle23);
 
-gsap.set(textA0, {
+gsap.set(texta0, {
     x: 16,
     y: 24,
 });
-gsap.set(textA1, {
+gsap.set(texta1, {
     x: 16,
     y: 124,
 });
-gsap.set(textB0, {
+gsap.set(textb0, {
     x: 16,
     y: 224,
 });
-gsap.set(textB1, {
+gsap.set(textb1, {
     x: 16,
     y: 324,
 });
@@ -215,81 +215,114 @@ gsap.set(textOutput2, {
 
 });
 
-svg.appendChild(textA0);
-svg.appendChild(textA1);
-svg.appendChild(textB0);
-svg.appendChild(textB1);
+svg.appendChild(texta0);
+svg.appendChild(texta1);
+svg.appendChild(textb0);
+svg.appendChild(textb1);
 svg.appendChild(textOutput1);
 svg.appendChild(textOutput2);
 svg.appendChild(textOutput3);
 
-const A1 = document.getElementById("input1");
-const B1 = document.getElementById("input2");
-const B0 = document.getElementById("input3");
-const A0 = document.getElementById("input4");
-const OUTPUT1 = document.getElementById("output1");
-const OUTPUT2 = document.getElementById("output2");
-const OUTPUT3 = document.getElementById("output3");
+const a1 = document.getElementById("input1");
+const b1 = document.getElementById("input2");
+const b0 = document.getElementById("input3");
+const a0 = document.getElementById("input4");
+const output1 = document.getElementById("output1");
+const output2 = document.getElementById("output2");
+const output3 = document.getElementById("output3");
 
 function free() {
     document.getElementById("Observations").innerHTML = "";
 }
 function and(a,b,c) {
-    if (a == 1 && b == 1) {
-        setter(1, c);
+    if (a === "1" && b === "1") {
+        setter("1", c);
     }
     else {
-        setter(0, c);
+        setter("0", c);
     }
-    return (a & b);
+    if(a === "1" && b === "1"){
+        return "1";
+    }
+    else{
+        return "0";
+    }
 }
 
 function nand(a,b,c) {
-    if (a == 1 && b == 1) {
-        setter(0, c);
+    if (a === "1" && b === "1") {
+        setter("0", c);
     }
     else {
-        setter(1, c);
+        setter("1", c);
     }
-    return (1-(a & b));
+    
+    if(a === "1" && b === "1"){
+        return "0";
+    }
+    else{
+        return "1";
+    }
 }
 function nandFor3Gates(a,b,c,d) {
-    if (a == 1 && b == 1 && c == 1) {
-        setter(0, d);
+    if (a === "1" && b === "1" && c === "1") {
+        setter("0", d);
     }
     else {
-        setter(1, d);
+        setter("1", d);
     }
-    return (1-(a & b & c));
+    
+    if(a === "1" && b === "1" && c === "1"){
+        return "0";
+    }
+    else{
+        return "1";
+    }
 }
 
 function xnor(a,b,c) {
-    if (a == b) {
-        setter(1, c);
+    if (a === "b") {
+        setter("1", c);
     }
     else {
-        setter(0, c);
+        setter("0", c);
     }
-    return (1 - (a ^ b));
+    if(a === b){
+        return "1";
+    }
+    else{
+        return "0";
+    }
 }
 
 function nor(a,b,c) {
-    if (a == 0 && b == 0) {
-        setter(1, c);
+    if (a === "0" && b === "0") {
+        setter("1", c);
     }
     else {
-        setter(0, c);
+        setter("0", c);
     }
-    return (1-(a | b));
+    if(a === "0" && b === "0"){
+        return "1";
+    }
+    else{
+        return "0";
+    }
 }
 
 function not(a,c) {
-    setter(1-a, c);
-    return (1-a);
+    if(a === "1"){
+        setter("0",c);
+        return "0";
+    }
+    if(a === "0"){
+        setter("1",c);
+        return "1";
+    }
 }
 function outputHandle(){
-    textOutput1.textContent = and(xnor(textA1.textContent,textB1.textContent,newCircle13),xnor(textA0.textContent,textB0.textContent,newCircle14),newCircle21);
-    textOutput3.textContent = nandFor3Gates(nand(textB1.textContent,not(textA1.textContent,newCircle6),newCircle15),nandFor3Gates(textB0.textContent,not(textA0.textContent,newCircle9),not(textA1.textContent,newCircle10),newCircle16),nandFor3Gates(textB1.textContent,textB0.textContent,not(textA0.textContent,newCircle23),newCircle17),newCircle20);
+    textOutput1.textContent = and(xnor(texta1.textContent,textb1.textContent,newCircle13),xnor(texta0.textContent,textb0.textContent,newCircle14),newCircle21);
+    textOutput3.textContent = nandFor3Gates(nand(textb1.textContent,not(texta1.textContent,newCircle6),newCircle15),nandFor3Gates(textb0.textContent,not(texta0.textContent,newCircle9),not(texta1.textContent,newCircle10),newCircle16),nandFor3Gates(textb1.textContent,textb0.textContent,not(texta0.textContent,newCircle23),newCircle17),newCircle20);
     textOutput2.textContent = nor(textOutput1.textContent,textOutput3.textContent,newCircle22);
     setter(textOutput1.textContent,newCircle21);
     setter(textOutput1.textContent,newCircle18);
@@ -322,39 +355,39 @@ function allDisappear() {
     TweenLite.to(newCircle21, 0, { autoAlpha: 0 });
     TweenLite.to(newCircle22, 0, { autoAlpha: 0 });
     TweenLite.to(newCircle23, 0, { autoAlpha: 0 });
-    TweenLite.to(textA0, 0, { autoAlpha: 0 });
-    TweenLite.to(textA1, 0, { autoAlpha: 0 });
-    TweenLite.to(textB0, 0, { autoAlpha: 0 });
-    TweenLite.to(textB1, 0, { autoAlpha: 0 });
+    TweenLite.to(texta0, 0, { autoAlpha: 0 });
+    TweenLite.to(texta1, 0, { autoAlpha: 0 });
+    TweenLite.to(textb0, 0, { autoAlpha: 0 });
+    TweenLite.to(textb1, 0, { autoAlpha: 0 });
     TweenLite.to(textOutput1, 0, { autoAlpha: 0 });
     TweenLite.to(textOutput2, 0, { autoAlpha: 0 });
     TweenLite.to(textOutput3, 0, { autoAlpha: 0 });
-    gsap.set(A0, {
+    gsap.set(a0, {
 
         fill: "#008000"
     });
-    gsap.set(A1, {
+    gsap.set(a1, {
 
         fill: "#008000"
     });
-    gsap.set(B0, {
+    gsap.set(b0, {
 
         fill: "#008000"
     });
 
-    gsap.set(B1, {
+    gsap.set(b1, {
 
         fill: "#008000"
     });
-    gsap.set(OUTPUT1, {
+    gsap.set(output1, {
 
         fill: "#008000"
     });
-    gsap.set(OUTPUT2, {
+    gsap.set(output2, {
             
             fill: "#008000"
     });
-    gsap.set(OUTPUT3, {
+    gsap.set(output3, {
     
         fill: "#008000"
     });
@@ -370,164 +403,162 @@ function unset(a) {
     });
 }//output 1
 function setter(a, b) {
-    if (a == 1) {
+    if (a === "1") {
         unset(b);
     }
-    else if (a == 0) {
+    else if (a === "0") {
         set(b);
     }
 }
 function input1() {
-    if (textA1.textContent != 0 && tl.progress() == 0) {
-        TweenLite.to(textA1, 0, { autoAlpha: 0 });
-        textA1.textContent = 0;
-        svg.appendChild(textA1);
-        gsap.set(textA1, {
+    if (texta1.textContent !== "0") {
+        TweenLite.to(texta1, 0, { autoAlpha: 0 });
+        texta1.textContent = 0;
+        svg.appendChild(texta1);
+        gsap.set(texta1, {
             x: 16,
             y: 24,
         });
-        gsap.set(A1, {
+        gsap.set(a1, {
             fill: "#eeeb22"
         });
         document.getElementById("Observations").innerHTML = "";
-        TweenLite.to(textA1, 0, { autoAlpha: 1 });
-        setter(textA1.textContent, newCircle);
-        setter(textA1.textContent, newCircle4);
+        TweenLite.to(texta1, 0, { autoAlpha: 1 });
+        setter(texta1.textContent, newCircle);
+        setter(texta1.textContent, newCircle4);
     }
-    else if (textA1.textContent != 1 && tl.progress() == 0) {    
-        TweenLite.to(textA1, 0, { autoAlpha: 0 });
-        textA1.textContent = 1;
-        svg.appendChild(textA1);
-        gsap.set(textA1, {
+    else if (texta1.textContent !== "1") {    
+        TweenLite.to(texta1, 0, { autoAlpha: 0 });
+        texta1.textContent = 1;
+        svg.appendChild(texta1);
+        gsap.set(texta1, {
             x: 16,
             y: 24,
         });
-        gsap.set(A1, {
+        gsap.set(a1, {
             fill: "#29e"
         });
         document.getElementById("Observations").innerHTML = "";
-        TweenLite.to(textA1, 0, { autoAlpha: 1 });
-        setter(textA1.textContent, newCircle);
-        setter(textA1.textContent, newCircle4);
+        TweenLite.to(texta1, 0, { autoAlpha: 1 });
+        setter(texta1.textContent, newCircle);
+        setter(texta1.textContent, newCircle4);
     }
 }
 function input2() {
-    if (textB1.textContent != 0  && tl.progress() == 0) {
-        TweenLite.to(textB1, 0, { autoAlpha: 0 });
-        textB1.textContent = 0;
-        svg.appendChild(textB1);
-        gsap.set(textB1, {
+    if (textb1.textContent !== "0") {
+        TweenLite.to(textb1, 0, { autoAlpha: 0 });
+        textb1.textContent = 0;
+        svg.appendChild(textb1);
+        gsap.set(textb1, {
             x: 16,
             y: 124,
         });
-        gsap.set(B1, {
+        gsap.set(b1, {
             fill: "#eeeb22"
         });
         document.getElementById("Observations").innerHTML = "";
-        TweenLite.to(textB1, 0, { autoAlpha: 1 });
-        setter(textB1.textContent, newCircle1);
-        setter(textB1.textContent, newCircle7);
-        setter(textB1.textContent, newCircle12);
+        TweenLite.to(textb1, 0, { autoAlpha: 1 });
+        setter(textb1.textContent, newCircle1);
+        setter(textb1.textContent, newCircle7);
+        setter(textb1.textContent, newCircle12);
         
     }
-    else if (textB1.textContent != 1  && tl.progress() == 0) {
-        TweenLite.to(textB1, 0, { autoAlpha: 0 });
-        textB1.textContent = 1;
-        svg.appendChild(textB1);
-        gsap.set(textB1, {
+    else if (textb1.textContent !== "1") {
+        TweenLite.to(textb1, 0, { autoAlpha: 0 });
+        textb1.textContent = 1;
+        svg.appendChild(textb1);
+        gsap.set(textb1, {
             x: 16,
             y: 124,
 
         });
-        gsap.set(B1, {
+        gsap.set(b1, {
             fill: "#29e"
         });
         document.getElementById("Observations").innerHTML = "";
-        TweenLite.to(textB1, 0, { autoAlpha: 1 });
-        setter(textB1.textContent, newCircle1);
-        setter(textB1.textContent, newCircle7);
-        setter(textB1.textContent, newCircle12);
+        TweenLite.to(textb1, 0, { autoAlpha: 1 });
+        setter(textb1.textContent, newCircle1);
+        setter(textb1.textContent, newCircle7);
+        setter(textb1.textContent, newCircle12);
     }
 }
 
 function input3() {
-    // console.log("here we go");
-    if (textB0.textContent != 0  && tl.progress() == 0) {
-        TweenLite.to(textB0, 0, { autoAlpha: 0 });
-        textB0.textContent = 0;
-        svg.appendChild(textB0);
-        gsap.set(textB0, {
+    if (textb0.textContent !== "0") {
+        TweenLite.to(textb0, 0, { autoAlpha: 0 });
+        textb0.textContent = 0;
+        svg.appendChild(textb0);
+        gsap.set(textb0, {
             x: 16,
             y: 224,
         });
-        gsap.set(B0, {
+        gsap.set(b0, {
             fill: "#eeeb22"
         });
         document.getElementById("Observations").innerHTML = "";
-        TweenLite.to(textB0, 0, { autoAlpha: 1 });
-        setter(textB0.textContent, newCircle2);
-        setter(textB0.textContent, newCircle8);
-        setter(textB0.textContent, newCircle11);
+        TweenLite.to(textb0, 0, { autoAlpha: 1 });
+        setter(textb0.textContent, newCircle2);
+        setter(textb0.textContent, newCircle8);
+        setter(textb0.textContent, newCircle11);
     }
-    else if (textB0.textContent != 1  && tl.progress() == 0) {
-        TweenLite.to(textB0, 0, { autoAlpha: 0 });
-        textB0.textContent = 1;
-        svg.appendChild(textB0);
-        gsap.set(textB0, {
+    else if (textb0.textContent !== "1") {
+        TweenLite.to(textb0, 0, { autoAlpha: 0 });
+        textb0.textContent = 1;
+        svg.appendChild(textb0);
+        gsap.set(textb0, {
             x: 16,
             y: 224,
         });
-        gsap.set(B0, {
+        gsap.set(b0, {
             fill: "#29e"
         });
         document.getElementById("Observations").innerHTML = "";
-        TweenLite.to(textB0, 0, { autoAlpha: 1 });
-        setter(textB0.textContent, newCircle2);
-        setter(textB0.textContent, newCircle8);
-        setter(textB0.textContent, newCircle11);
+        TweenLite.to(textb0, 0, { autoAlpha: 1 });
+        setter(textb0.textContent, newCircle2);
+        setter(textb0.textContent, newCircle8);
+        setter(textb0.textContent, newCircle11);
     }
 }
 
 function input4() {
-    // console.log("here we go");
-    if (textA0.textContent != 0 && tl.progress() == 0) {
-        TweenLite.to(textA0, 0, { autoAlpha: 0 });
-        textA0.textContent = 0;
-        svg.appendChild(textA0);
-        gsap.set(textA0, {
+    if (texta0.textContent !== "0") {
+        TweenLite.to(texta0, 0, { autoAlpha: 0 });
+        texta0.textContent = 0;
+        svg.appendChild(texta0);
+        gsap.set(texta0, {
             x: 16,
             y: 324,
         });
-        gsap.set(A0, {
+        gsap.set(a0, {
             fill: "#eeeb22"
         });
         document.getElementById("Observations").innerHTML = "";
-        TweenLite.to(textA0, 0, { autoAlpha: 1 });
-        setter(textA0.textContent, newCircle3);
-        setter(textA0.textContent, newCircle5);
+        TweenLite.to(texta0, 0, { autoAlpha: 1 });
+        setter(texta0.textContent, newCircle3);
+        setter(texta0.textContent, newCircle5);
     }
-    else if (textA0.textContent != 1 && tl.progress() == 0) {
-        TweenLite.to(textA0, 0, { autoAlpha: 0 });
-        textA0.textContent = 1;
-        svg.appendChild(textA0);
-        gsap.set(textA0, {
+    else if (texta0.textContent !== "1") {
+        TweenLite.to(texta0, 0, { autoAlpha: 0 });
+        texta0.textContent = 1;
+        svg.appendChild(texta0);
+        gsap.set(texta0, {
             x: 16,
             y: 324,
 
         });
-        gsap.set(A0, {
+        gsap.set(a0, {
             fill: "#29e"
         });
         document.getElementById("Observations").innerHTML = "";
-        TweenLite.to(textA0, 0, { autoAlpha: 1 });
-        setter(textA0.textContent, newCircle3);
-        setter(textA0.textContent, newCircle5);
+        TweenLite.to(texta0, 0, { autoAlpha: 1 });
+        setter(texta0.textContent, newCircle3);
+        setter(texta0.textContent, newCircle5);
     }
 }
 function outputSetter() {
-    setter(textOutput1.textContent, OUTPUT1);
-    setter(textOutput2.textContent, OUTPUT2);
-    setter(textOutput3.textContent, OUTPUT3);
+    setter(textOutput1.textContent, output1);
+    setter(textOutput2.textContent, output2);
+    setter(textOutput3.textContent, output3);
 
 }
 
@@ -537,44 +568,43 @@ function observation() {
 let tl = gsap.timeline({ repeat: 0, repeatDelay: 0 });
 
 let speedCircuit = 1;
-function SetSpeed(speed) {
-    // console.log(speed)
-    if (speed == "1") {
-        if (textA0.textContent != 2 && textA1.textContent != 2 && textB0.textContent != 2 && textB1.textContent != 2 && tl.progress()!=1) {
+function setSpeed(speed) {
+    if (speed === "1") {
+        if (texta0.textContent !== "2" && texta1.textContent !== "2" && textb0.textContent !== "2" && textb1.textContent !== "2" && tl.progress()!==1) {
             tl.timeScale(1);
         }
     }
-    else if (speed == "2") {
-        if (textA0.textContent != 2 && textA1.textContent != 2 && textB0.textContent != 2 && textB1.textContent != 2 && tl.progress()!=1) {
+    else if (speed === "2") {
+        if (texta0.textContent !== "2" && texta1.textContent !== "2" && textb0.textContent !== "2" && textb1.textContent !== "2" && tl.progress()!==1) {
             tl.timeScale(2);
         }
     }
-    else if (speed == "4") {
-        if (textA0.textContent != 2 && textA1.textContent != 2 && textB0.textContent != 2 && textB1.textContent != 2 && tl.progress()!=1) {
+    else if (speed === "4") {
+        if (texta0.textContent !== "2" && texta1.textContent !== "2" && textb0.textContent !== "2" && textb1.textContent !== "2" && tl.progress()!==1) {
             tl.timeScale(4);
         }
     }
-    if(tl.progress()==0){
+    if(tl.progress()===0){
         speedCircuit = speed;
     }
 
 }
-function WorkCircuit() {
+function workCircuit() {
     let a = document.getElementById("currentwork").innerHTML;
-    if (a == "Start") {
+    if (a === "Start") {
         startCircuit();
     }
-    else if (a == "Stop") {
+    else if (a === "Stop") {
         stopCircuit();
     }
 }
 function stopCircuit() {
-    if (tl.time() != 0 && tl.progress() !=1) {
+    if (tl.time() !== 0 && tl.progress() !==1) {
         tl.pause();
         document.getElementById("currentwork").innerHTML = "Start";
         document.getElementById("Observations").innerHTML = "Simulation has been stopped."
     }
-    else if(tl.progress() == 1){
+    else if(tl.progress() === 1){
         document.getElementById("Observations").innerHTML = "Please Restart the simulation"
     }
 }
@@ -582,16 +612,16 @@ function stopCircuit() {
 
 function startCircuit() {
     
-    if (textA0.textContent != 2 && textA1.textContent != 2 && textB0.textContent != 2 && textB1.textContent != 2 && tl.progress()!=1) {
+    if (texta0.textContent !== "2" && texta1.textContent !== "2" && textb0.textContent !== "2" && textb1.textContent !== "2" && tl.progress()!==1) {
         document.getElementById("currentwork").innerHTML = "Stop";
         tl.play();
         tl.timeScale(speedCircuit);
         document.getElementById("Observations").innerHTML = "Simulation has started."
     }
-    else if (textA0.textContent == 2 || textA1.textContent == 2 || textB0.textContent == 2 || textB1.textContent == 2) {
+    else if (texta0.textContent === "2" || texta1.textContent === "2" || textb0.textContent === "2" || textb1.textContent === "2") {
         document.getElementById("Observations").innerHTML = "Please select the values"
     }
-    else if(tl.progress() == 1){
+    else if(tl.progress() === 1){
         document.getElementById("Observations").innerHTML = "Please Restart the simulation"  
     }
 }
