@@ -72,7 +72,6 @@ function changeTabs(e) {
     initComparator();
     window.simulate = simulate
   }
-  updateInstructions();
   updateToolbar();
   clearObservations();
   resize();
@@ -80,14 +79,6 @@ function changeTabs(e) {
 }
 
 window.changeTabs = changeTabs;
-
-function updateInstructions() {
-  if (window.currentTab === "task1") {
-    document.getElementById("TaskTitle").innerHTML = "2-bit comparator";
-    document.getElementById("TaskDescription").innerHTML = 'Implement a 2-bit comparator using logic gates.'
-  }
-}
-
 // Toolbar
 
 function updateToolbar() {
@@ -112,12 +103,6 @@ function clearObservations() {
   document.getElementById('result').innerHTML = "";
 
 }
-
-// Instruction box
-const instructionBox = document.getElementsByClassName("instructions-box")[0];
-instructionBox.addEventListener("click", (e) => {
-  instructionBox.classList.toggle("expand");
-});
 
 // Making webpage responsive
 
