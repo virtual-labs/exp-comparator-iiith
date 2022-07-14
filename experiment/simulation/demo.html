@@ -57,8 +57,8 @@
                 <option value="2">2x</option>
                 <option value="4">4x</option>
             </select>
-            <button class="v-button" id="currentwork" onclick="workCircuit()">Start</button>
-            <a href="demo.html"><button class="v-button">Reset</button></a>
+            <button class="v-button" id="play-or-pause" onclick="simulationStatus()">Start</button>
+            <button class="v-button" id="restart" onclick="restartCircuit()">Reset</button>
         </div>
     </div>
     <div class="columns is-centered is-flex is-flex-direction-row is-flex-wrap-wrap is-align-content-start">
@@ -136,56 +136,58 @@
 
                         <path id="path24" fill="none" stroke="currentColor" stroke-width="3"
                             d="M 150 471 v 239 h 110" />
-                        <g id="NOT">
-                            <path id="path1NOT" fill="#29e" stroke="currentColor" stroke-width="3"
+                        <g id="not1">
+                            <path  fill="#29e" stroke="currentColor" stroke-width="3"
                                 d="M 80 420 L 120 420 L 100 455 L 80 420" />
-                            <circle id="circle1NOT" fill="white" cx="100" cy="463" r="8" stroke="black" stroke-width="3"
+                            <circle fill="white" cx="100" cy="463" r="8" stroke="black" stroke-width="3"
                                 fill="none" />
                         </g>
-                        <g id="NOT2">
-                            <path id="path2NOT" fill="#29e" stroke="currentColor" stroke-width="3"
+                        <g id="not2">
+                            <path fill="#29e" stroke="currentColor" stroke-width="3"
                                 d="M 130 420 L 170 420 L 150 455 L 130 420" />
-                            <circle id="circle1NOT" fill="white" cx="150" cy="463" r="8" stroke="black" stroke-width="3"
+                            <circle fill="white" cx="150" cy="463" r="8" stroke="black" stroke-width="3"
                                 fill="none" />
                         </g>
-                        <g id="AND1">
-                            <path id="path1AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                        <g id="nand1">
+                            <path fill="#29e" stroke="currentColor" stroke-width="3"
                                 d="M 260 531 v 50 h 50 Q 345 556 310 531 h -50" />
                         </g>
-                        <g id="AND2">
-                            <path id="path2AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                        <g id="nand2">
+                            <path fill="#29e" stroke="currentColor" stroke-width="3"
                                 d="M 260 601 v 50 h 50 Q 345 626 310 601 h -50" />
                         </g>
-                        <g id="AND3">
-                            <path id="path1AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                        <g id="nand3">
+                            <path fill="#29e" stroke="currentColor" stroke-width="3"
                                 d="M 260 671 v 50 h 50 Q 345 696 310 671 h -50" />
                         </g>
-                        <g id="AND4">
-                            <path id="path1AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                        <g id="nand4">
+                            <path fill="#29e" stroke="currentColor" stroke-width="3"
                                 d="M 498 145 v 50 h 50 Q 573 170 548 145 h -50" />
                         </g>
-                        <g id="AND5">
-                            <path id="path1AND" fill="#29e" stroke="currentColor" stroke-width="3"
+                        <g id="nand5">
+                            <path fill="#29e" stroke="currentColor" stroke-width="3"
                                 d="M 506 600 v 50 h 50 Q 581 625 556 600 h -50" />
                         </g>
 
-                        <g id="XNOR1">
-                            <path id="path1OR" stroke="currentColor" fill="#29e" stroke-width="3"
+                        <g id="xnor1">
+                            <path stroke="currentColor" fill="#29e" stroke-width="3"
                                 d="M 240 20 Q 290 70 240 120 Q 291 70 240 20 M 245 20 Q 295 70 245 120 Q 395 70 245 20" />
                         </g>
-                        <g id="XNOR2">
-                            <path id="path1OR" stroke="currentColor" fill="#29e" stroke-width="3"
+                        <g id="xnor2">
+                            <path stroke="currentColor" fill="#29e" stroke-width="3"
                                 d="M 240 220 Q 290 270 240 320 Q 291 270 240 220 M 245 220 Q 295 270 245 320 Q 395 270 245 220" />
                         </g>
 
-                        <g id="XOR">
-                            <path id="path1OR" stroke="currentColor" fill="#29e" stroke-width="3"
-                                d="M 722 365 Q 772 397.5 722 430 Q 773 397.5 722 365 M 727 365 Q 777 397.5 727 430 Q 877 397.5 727 365" />
+                        <g id="nor">
+                            <path stroke="currentColor" fill="#29e" stroke-width="3"
+                                d="M 722 365 Q 772 397.5 722 430 Q 773 397.5 722 365 M 722 365 Q 772 397.5 722 430 Q 877 397.5 727 365" />
+                                <circle fill="white" cx="810" cy="398" r="8" stroke="black" stroke-width="3"
+                                fill="none" />
                         </g>
-                        <circle id="input1" cx="20" cy="20" r="15" onclick="input1()" class="color-green" />
-                        <circle id="input2" cx="20" cy="120" r="15" onclick="input2()" class="color-green" />
-                        <circle id="input3" cx="20" cy="220" r="15" onclick="input3()" class="color-green" />
-                        <circle id="input4" cx="20" cy="320" r="15" onclick="input4()" class="color-green" />
+                        <circle id="inputa1" cx="20" cy="20" r="15" onclick="appendInputA1()" class="color-green" />
+                        <circle id="inputb1" cx="20" cy="120" r="15" onclick="appendInputB1()" class="color-green" />
+                        <circle id="inputb0" cx="20" cy="220" r="15" onclick="appendInputB0()" class="color-green" />
+                        <circle id="inputa0" cx="20" cy="320" r="15" onclick="appendInputA0()" class="color-green" />
                         <circle id="output1" cx="912" cy="170" r="15" class="color-green" />
                         <circle id="output2" cx="912" cy="397.5" r="15" class="color-green" />
                         <circle id="output3" cx="912" cy="625" r="15" class="color-green" />
@@ -195,14 +197,14 @@
                         <circle id="select" cx="338" cy="625" r="8" class="color-white" />
                         <circle id="select" cx="338" cy="695" r="8" class="color-white" />
                         <circle id="select" cx="578" cy="625" r="8" class="color-white" />
-                        <text font-size="1em" x="10" y="50" fill="black">A1</text>
-                        <text font-size="1em" x="10" y="150" fill="black">B1</text>
-                        <text font-size="1em" x="10" y="250" fill="black">B0</text>
-                        <text font-size="1em" x="10" y="350" fill="black">A0</text>
-                        <text font-size="1em" x="932" y="173" fill="black">A = B</text>
-                        <text font-size="1em" x="932" y="400.5" fill="black">A > B</text>
-                        <text font-size="1em" x="932" y="628" fill="black">B > A</text>
-                        <text font-size="1em" x="755" y="400" fill="black">XOR</text>
+                        <text font-size="1.2em" x="10" y="60" fill="black">A1</text>
+                        <text font-size="1.2em" x="10" y="160" fill="black">B1</text>
+                        <text font-size="1.2em" x="10" y="260" fill="black">B0</text>
+                        <text font-size="1.2em" x="10" y="360" fill="black">A0</text>
+                        <text font-size="1.2em" x="932" y="178" fill="black">A = B</text>
+                        <text font-size="1.2em" x="932" y="405.5" fill="black">A > B</text>
+                        <text font-size="1.2em" x="932" y="633" fill="black">B > A</text>
+                        <text font-size="1em" x="755" y="400" fill="black">NOR</text>
                         <text font-size="1em" x="510" y="180" fill="black">AND</text>
                         <text font-size="1em" x="272" y="80" fill="black">XNOR</text>
                         <text font-size="1em" x="272" y="280" fill="black">XNOR</text>
@@ -214,20 +216,17 @@
                 </div>
             </div>
         </div>
-        <div class="column is-3-desktop is-12-tablet is-12-mobile">
+        <div class="column is-3-desktop is-4-tablet is-12-mobile">
             <div class="v-datalist-container components-list">
                 <div class="v-datalist-title">Observations</div>
                 <div class="v-datalist-row">
-                    <div id="Observations">
-                    </div>
-                    <div id="result"></div>
+                    <div id="observations"></div>
                 </div>
-
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js"></script>
-    <script src="js/animation.js"></script>
+    <script type="module" src="js/animation.js"></script>
 
 </body>
 
