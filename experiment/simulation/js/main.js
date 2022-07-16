@@ -135,10 +135,48 @@ export function registerGate(id, gate) {
                 uuid: "output:0:" + id,
             })
         );
-    } else if (gateType === "Input") {
+    } 
+    else if (gateType === "THREEIPNAND") {
+        gate.addInputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [0, 0.5, -1, 0, -7, -11],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "input:0:" + id,
+            })
+        );
+        gate.addInputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [0, 0.5, -1, 0, -7, 0],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "input:1:" + id,
+            })
+        );
+        gate.addInputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [0, 0.5, -1, 0, -7, 12],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "input:2:" + id,
+            })
+        );
         gate.addOutputPoints(
             jsPlumbInstance.addEndpoint(element, {
                 anchor: [1, 0.5, 1, 0, 7, 0],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "output:0:" + id,
+            })
+        );
+    } else if (gateType === "Input") {
+        gate.addOutputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [1, 0.5, 0, 1, 7, 0],
                 source: true,
                 target: true,
                 connectionsDetachable: false,
@@ -162,13 +200,13 @@ export function initComparator() {
     const types = ["Input", "Input", "Input", "Input", "Output", "Output", "Output"];
     const names = ["A0", "A1", "B0", "B1", "A&gt;B", "A&lt;B", "A=B"];
     const positions = [
-        { x: 40, y: 100 },
-        { x: 40, y: 300 },
-        { x: 40, y: 500 },
-        { x: 40, y: 700 },
-        { x: 820, y: 200 },
+        { x: 230, y: 50 },
+        { x: 160, y: 50 },
+        { x: 90, y: 50 },
+        { x: 20, y: 50 },
         { x: 820, y: 400 },
         { x: 820, y: 600 },
+        { x: 820, y: 200 },
     ];
     for (let i = 0; i < ids.length; i++) {
         let gate = new gatejs.Gate(types[i]);

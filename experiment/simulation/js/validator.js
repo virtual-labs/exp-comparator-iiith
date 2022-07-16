@@ -55,15 +55,22 @@ export function testComparator(inputA,inputB, inputC, inputD, outputA, outputB, 
         const AeqB = computeAnd(computeXnor(A0,B0),computeXnor(A1,B1)) ? 1 : 0;
 
         // simulate the circuit
-        testSimulation(gates_list);
+        if(!testSimulation(gates_list)){
+            return;
+        }
         const agtb = gates_list[outputA].output ? 1 : 0;
         const altb = gates_list[outputB].output ? 1 : 0;
         const aeqb = gates_list[outputC].output ? 1 : 0;
 
-        dataTable += `<tr><th>${binary[3]}&nbsp;${binary[2]}</th><th>${binary[1]}&nbsp;${binary[0]}</th><td>${altb}</td><td>${aeqb}</td><td>${agtb}</td></tr>`
+        
 
-        if(AgtB != agtb || AltB != altb || AeqB != aeqb)
+        if(AgtB != agtb || AltB != altb || AeqB != aeqb) {
             cicuitIsCorrect = false;
+            dataTable += `<tr class="bold-table"><th>${binary[3]}&nbsp;${binary[2]}</th><th>${binary[1]}&nbsp;${binary[0]}</th><td class="failure-table">${altb}</td><td class="failure-table">${aeqb}</td><td class="failure-table">${agtb}</td></tr>`
+        }
+        else {
+            dataTable += `<tr class="bold-table"><th>${binary[3]}&nbsp;${binary[2]}</th><th>${binary[1]}&nbsp;${binary[0]}</th><td class="success-table">${altb}</td><td class="success-table">${aeqb}</td><td class="success-table">${agtb}</td></tr>`
+        }
             
     }
 
