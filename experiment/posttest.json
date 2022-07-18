@@ -1,0 +1,67 @@
+{
+    "version": 2.0,
+    "questions": [
+        {
+            "question": "1. If the input to a comparator is a sine wave, the output is a:",
+            "answers": {
+                "a": "ramp voltage",
+                "b": "sine wave",
+                "c": "rectangular wave",
+                "d": "saw tooth wave"
+            },
+            "correctAnswer": "c",
+            "explanations": {},
+            "difficulty": "advanced"
+        },
+        {
+            "question": "2. A comparator circuit can be used to:",
+            "answers": {
+                "a": "Mark the instant when an arbitrary waveform attains some reference level",
+                "b": "Mark the instant when the input voltage becomes constant",
+                "c": "Switch ON and OFF a circuit alternately at a particular rate",
+                "d": "Switch OFF a circuit when output becomes zero"
+            },
+            "correctAnswer": "a",
+            "explanations": {},
+            "difficulty": "intermediate"
+        },
+        {
+            "question": "3. Number of outputs in the comparator circuit is:",
+            "answers": {
+                "a": "1",
+                "b": "2",
+                "c": "3",
+                "d": "4"
+            },
+            "correctAnswer": "c",
+            "explanations": {
+                "c": "One output for each of the comparision(greater than, less than, equal to)"
+            },
+            "difficulty": "beginner"
+        },
+        {
+            "question": "4. Which of the following gates is not used in a 2 bit comparator circuit:",
+            "answers": {
+                "a": "NAND",
+                "b": "AND",
+                "c": "XNOR",
+                "d": "OR"
+            },
+            "correctAnswer": "d",
+            "explanations": {},
+            "difficulty": "intermediate"
+        },
+        {
+            "question": "5. If two out of the three outputs are known, the third can be inferred as:",
+            "answers": {
+                "a": "Always true",
+                "b": "Sometimes true",
+                "c": "Always False",
+                "d": "Can't say"
+            },
+            "correctAnswer": "d",
+            "explanations": {},
+            "difficulty": "beginner"
+        }
+    ]
+}
