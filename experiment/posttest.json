@@ -52,7 +52,7 @@
             "difficulty": "intermediate"
         },
         {
-            "question": "5. If two out of the three outputs are known third one can be infered:",
+            "question": "5. If two out of the three outputs are known, the third can be inferred as:",
             "answers": {
                 "a": "Always true",
                 "b": "Sometimes true",
