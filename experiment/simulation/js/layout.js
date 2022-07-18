@@ -21,21 +21,18 @@ export const wireColours = [
 // Contextmenu
 const menu = document.querySelector(".menu");
 const menuOption = document.querySelector(".menu-option");
-let menuVisible = false;
-
-const toggleMenu = command => {
-  menu.style.display = command === "show" ? "block" : "none";
-  menuVisible = !menuVisible;
-};
 
 export const setPosition = ({ top, left }) => {
   menu.style.left = `${left}px`;
   menu.style.top = `${top}px`;
-  toggleMenu("show");
+  menu.style.display = "block";
 };
 
 window.addEventListener("click", e => {
-  if (menuVisible) toggleMenu("hide");
+  if (menu.style.display != "none")
+  {
+    menu.style.display = "none";
+  }
   window.selectedComponent = null;
   window.componentType = null;
 });

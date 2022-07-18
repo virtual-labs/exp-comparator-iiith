@@ -61,7 +61,7 @@
             <button class="v-button" id="restart" onclick="restartCircuit()">Reset</button>
         </div>
     </div>
-    <div class="columns is-centered is-flex is-flex-direction-row is-flex-wrap-wrap is-align-content-start">
+    <div class="columns is-centered is-flex-direction-row is-flex-wrap-wrap is-align-content-start">
         <div class="column is-9-desktop is-12-tablet is-12-mobile">
             <div id="circuit-board">
                 <div id="working-area">
@@ -129,25 +129,31 @@
                         </g>
                         <g id="nand1">
                             <path class="gate-demo" d="M 260 531 v 50 h 50 Q 345 556 310 531 h -50" />
+                            <circle cx="338" cy="555" r="8" class="color-white" />
                         </g>
                         <g id="nand2">
                             <path class="gate-demo" d="M 260 601 v 50 h 50 Q 345 626 310 601 h -50" />
+                            <circle cx="338" cy="625" r="8" class="color-white" />
                         </g>
                         <g id="nand3">
                             <path class="gate-demo" d="M 260 671 v 50 h 50 Q 345 696 310 671 h -50" />
+                            <circle cx="338" cy="695" r="8" class="color-white" />
                         </g>
                         <g id="nand4">
-                            <path class="gate-demo" d="M 498 145 v 50 h 50 Q 573 170 548 145 h -50" />
-                        </g>
-                        <g id="nand5">
                             <path class="gate-demo" d="M 506 600 v 50 h 50 Q 581 625 556 600 h -50" />
+                            <circle cx="578" cy="625" r="8" class="color-white" />
+                        </g>
+                        <g id="and">
+                            <path class="gate-demo" d="M 498 145 v 50 h 50 Q 573 170 548 145 h -50" />
                         </g>
 
                         <g id="xnor1">
                             <path class="gate-demo" d="M 240 20 Q 290 70 240 120 Q 291 70 240 20 M 245 20 Q 295 70 245 120 Q 395 70 245 20" />
+                            <circle cx="330" cy="70" r="8" class="color-white" />
                         </g>
                         <g id="xnor2">
                             <path class="gate-demo" d="M 240 220 Q 290 270 240 320 Q 291 270 240 220 M 245 220 Q 295 270 245 320 Q 395 270 245 220" />
+                            <circle cx="330" cy="270" r="8" class="color-white" />
                         </g>
 
                         <g id="nor">
@@ -161,12 +167,7 @@
                         <circle id="output1" cx="912" cy="170" r="15" class="color-green" />
                         <circle id="output2" cx="912" cy="397.5" r="15" class="color-green" />
                         <circle id="output3" cx="912" cy="625" r="15" class="color-green" />
-                        <circle id="select" cx="330" cy="70" r="8" class="color-white" />
-                        <circle id="select" cx="330" cy="270" r="8" class="color-white" />
-                        <circle id="select" cx="338" cy="555" r="8" class="color-white" />
-                        <circle id="select" cx="338" cy="625" r="8" class="color-white" />
-                        <circle id="select" cx="338" cy="695" r="8" class="color-white" />
-                        <circle id="select" cx="578" cy="625" r="8" class="color-white" />
+                        
                         <text class="text-demo" x="10" y="60" >A1</text>
                         <text class="text-demo" x="10" y="160" >B1</text>
                         <text class="text-demo" x="10" y="260" >B0</text>

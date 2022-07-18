@@ -1,4 +1,4 @@
-import { setCoordinates,fillInputDots,fillColor,objectDisappear,objectAppear,setColor,unsetColor,calculateAnd,calculateNot,calculateXor,calculateOr} from "./animation-utility.js";
+import { setCoordinates,fillInputDots,fillColor,objectDisappear,objectAppear,setter,calculateAnd,calculateNot,calculateXor,calculateOr} from "./animation-utility.js";
 
 'use strict'
 
@@ -297,14 +297,7 @@ function reboot() {
     }
 }
 
-function setter(value, component) {
-    if (value === "1") {
-        unsetColor(component);
-    }
-    else if (value === "0") {
-        setColor(component);
-    }
-}
+
 
 function setSpeed(speed) {
     if (circuitStarted) {
@@ -332,19 +325,19 @@ function simulationStatus() {
     if (!decide) {
         startCircuit();
     }
-    else if (decide) {
+    else {
         stopCircuit();
     }
 }
 function stopCircuit() {
-    if (timeline.time() !== 0 && timeline.progress() !== 1) {
+    if (timeline.progress() !== 1) {
         timeline.pause();
         observ.innerHTML = "Simulation has been stopped.";
         decide = false;
         status.innerHTML = "Start";
         speed.selectedIndex = 0;
     }
-    else if (timeline.progress() === 1) {
+    else {
         observ.innerHTML = "Please Restart the simulation";
     }
 }
@@ -366,7 +359,7 @@ function startCircuit() {
         status.innerHTML = "Pause";
         speed.selectedIndex = 0;
     }
-    else if (timeline.progress() === 1) {
+    else {
         observ.innerHTML = "Please Restart the simulation";
     }
 }

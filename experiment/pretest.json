@@ -14,7 +14,7 @@
             "difficulty": "beginner"
         },
         {
-            "question": "2. During bitwise comparision of 2 binary numbers A = 1001010010 and B = 1011000110, with comparision of minimum number of bits, how many bits need to be compared to determine the comparision of two nuumbers:",
+            "question": "2. During bitwise comparision of 2 binary numbers A = 1001010010 and B = 1011000110, with comparision of minimum number of bits, how many bits need to be compared to determine the comparision of two numbers:",
             "answers": {
                 "a": "2",
                 "b": "3",
@@ -26,7 +26,7 @@
             "difficulty": "advanced"
         },
         {
-            "question": "3. Which of the following expression represent output for A>B:",
+            "question": "3. Which of the following expressions represents output for A>B:",
             "answers": {
                 "a": "AB'",
                 "b": "A'B",
@@ -38,7 +38,7 @@
             "difficulty": "intermediate"
         },
         {
-            "question": "4. Which of the following expression represent output for A=B:",
+            "question": "4. Which of the following expressions represents output for A=B:",
             "answers": {
                 "a": "AB'",
                 "b": "A'B",
@@ -50,7 +50,7 @@
             "difficulty": "intermediate"
         },
         {
-            "question": "5. Which of the following are exmples of comparators:",
+            "question": "5. Which of the following are examples of comparators:",
             "answers": {
                 "a": "CMOS 4063",
                 "b": "CMOS 4585",
@@ -59,7 +59,7 @@
             },
             "correctAnswer": "d",
             "explanations": {},
-            "difficulty": "begineer"
+            "difficulty": "beginner"
         }
     ]
 }

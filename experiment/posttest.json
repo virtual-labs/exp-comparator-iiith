@@ -37,7 +37,7 @@
             "explanations": {
                 "c": "One output for each of the comparision(greater than, less than, equal to)"
             },
-            "difficulty": "begineer"
+            "difficulty": "beginner"
         },
         {
             "question": "4. Which of the following gates is not used in a 2 bit comparator circuit:",
@@ -52,7 +52,7 @@
             "difficulty": "intermediate"
         },
         {
-            "question": "5. If two of the three outputs is known third one can be infered:",
+            "question": "5. If two out of the three outputs are known third one can be infered:",
             "answers": {
                 "a": "Always true",
                 "b": "Sometimes true",
@@ -61,7 +61,7 @@
             },
             "correctAnswer": "d",
             "explanations": {},
-            "difficulty": "begineer"
+            "difficulty": "beginner"
         }
     ]
 }

@@ -21,12 +21,21 @@ export function fillColor(object, color) {
         fill: color
     });
 }
-export function setColor(object) {
+function setColor(object) {
 
     fillColor(object, "#eeeb22");
 }
-export function unsetColor(object) {
+function unsetColor(object) {
     fillColor(object, "#29e");
+}
+
+export function setter(value, component) {
+    if (value === "1") {
+        unsetColor(component);
+    }
+    else if (value === "0") {
+        setColor(component);
+    }
 }
 
 export function calculateFullAdder(a, b, cin) {
