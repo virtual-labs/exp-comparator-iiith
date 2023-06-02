@@ -90,13 +90,7 @@ function updateToolbar() {
 function clearObservations() {
 
   document.getElementById("table-body").innerHTML = "";
-  let head = '';
-
-  if (window.currentTab === "task1") {
-    head = '<tr><th colspan="2">Input</th><th colspan="3">Result</th></tr><tr><th>A1&nbsp;A0</th><th>B1&nbsp;B0</th><th>A&lt;B</th><th>A=B</th><th>A&gt;B</th></tr>'
-  }
-
-  document.getElementById("table-head").innerHTML = head;
+  document.getElementById("table-head").innerHTML = "";
   document.getElementById('result').innerHTML = "";
 
 }

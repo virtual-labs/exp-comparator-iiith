@@ -224,6 +224,8 @@ window.setInput = setInput;
 export function clearResult() {
     const result = document.getElementById("result");
     result.innerHTML = "";
+    document.getElementById("table-body").innerHTML = "";
+    document.getElementById("table-head").innerHTML="";
 }
 
 export function printErrors(message,objectId) {
@@ -313,6 +315,8 @@ export function submitCircuit() {
     clearResult();
     document.getElementById("table-body").innerHTML = "";
     if (window.currentTab === "task1") {
+        if(!checkConnections())
+        return;
         testComparator("Input-0", "Input-1", "Input-2", "Input-3", "Output-4", "Output-5", "Output-6");
     }
 }
