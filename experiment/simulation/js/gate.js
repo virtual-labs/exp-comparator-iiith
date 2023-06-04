@@ -31,6 +31,7 @@ export class Gate {
         this.inputPoints = [];
         this.outputPoints = [];
         this.inputs = []; // List of input gates
+        this.outputs=[];
         this.output = null; // Output value
         this.isInput = false;
         this.isOutput = false;
@@ -45,11 +46,24 @@ export class Gate {
         this.inputs.push(gate);
     }
 
+    addOutput(gate) {
+        this.outputs.push(gate);
+    }
+
     // Removes input from the gate
     removeInput(gate) {
-        let index = this.inputs.indexOf(gate);
-        if (index > -1) {
-            this.inputs.splice(index, 1);
+        for (let i = this.inputs.length - 1; i >= 0; i--) {
+            if (this.inputs[i] === gate) {
+              this.inputs.splice(i, 1);
+            }
+        }
+    }
+    removeOutput(gate) {
+        // Find and remove all occurrences of gate
+      for (let i = this.outputs.length - 1; i >= 0; i--) {
+        if (this.outputs[i] === gate) {
+          this.outputs.splice(i, 1);
+            }
         }
     }
     updatePosition(id) {
@@ -247,7 +261,7 @@ export function checkConnections() {
         if (gate.inputPoints.length != gate.inputs.length) {
             printErrors("Highlighted component not connected properly\n",id);
             return false;
-        } else if (gate.isConnected === false && gate.isOutput === false) {
+        } else if ((gate.isConnected === false || gate.outputs.length===0) && gate.isOutput === false) {
             printErrors("Highlighted component not connected properly\n",id);
             return false;
         }
@@ -354,6 +368,9 @@ export function deleteElement(gateid) {
     for (let elem in gates) {
         if (gates[elem].inputs.includes(gate)) {
             gates[elem].removeInput(gate);
+        }
+        if(gates[elem].outputs.includes(gate)) {
+            gates[elem].removeOutput(gate);
         }
     }
     delete gates[gateid];
