@@ -335,6 +335,13 @@ export function testSimulation(gates) {
 export function submitCircuit() {
     clearResult();
     document.getElementById("table-body").innerHTML = "";
+    
+    if (window.currentTab === "task1") {
+        if(!checkConnections())
+        return;
+        testComparator("Input-0", "Input-1", "Input-2", "Input-3", "Output-4", "Output-5", "Output-6");
+    }
+    
     // Refresh the input bit values to default 1 and output bit values to default empty black circles after submitting
     for (let gateId in gates) {
         const gate = gates[gateId];
@@ -350,11 +357,6 @@ export function submitCircuit() {
             element.className = "output";
             element.childNodes[0].innerHTML = "";
         }
-    }
-    if (window.currentTab === "task1") {
-        if(!checkConnections())
-        return;
-        testComparator("Input-0", "Input-1", "Input-2", "Input-3", "Output-4", "Output-5", "Output-6");
     }
 }
 window.submitCircuit = submitCircuit;
