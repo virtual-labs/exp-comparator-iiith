@@ -14,7 +14,8 @@
             "difficulty": "beginner"
         },
         {
-            "question": "2. During bitwise comparision of 2 binary numbers A = 1001010010 and B = 1011000110, with comparision of minimum number of bits, how many bits need to be compared to determine the comparision of two numbers:",
+
+            "question": "2. During bitwise comparison of 2 binary numbers A = 1001010010 and B = 1011000110, with comparison of minimum number of bits, how many bits need to be compared to determine the comparison of two numbers:",
             "answers": {
                 "a": "2",
                 "b": "3",

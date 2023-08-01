@@ -35,7 +35,7 @@
             },
             "correctAnswer": "c",
             "explanations": {
-                "c": "One output for each of the comparision(greater than, less than, equal to)"
+                "c": "One output for each of the comparison (greater than, less than, equal to)"
             },
             "difficulty": "beginner"
         },

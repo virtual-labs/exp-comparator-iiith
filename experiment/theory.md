@@ -1,6 +1,6 @@
 The operation of a single bit digital comparator can be expressed as a truth table:
 
-**InputsOutputs**
+**Inputs**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Outputs**
 
 |A  |	B  |	A > B |	A = B |	A < B|
 |---|------|----------|-------|------|
@@ -10,9 +10,9 @@ The operation of a single bit digital comparator can be expressed as a truth tab
 |1  |   1  | 	0     |	1     |	0    |
 
 
-The operation of a two bit digital comparator cannot be expressed as a truth table: 
+The operation of a two bit digital comparator can be expressed as a truth table: 
 
-**Inputs 	Outputs**
+**Inputs**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Outputs**
 
 |A<sub>1</sub>|A<sub>0</sub> | B<sub>1</sub>|  B<sub>0</sub> | A < B| A = B| A > B|
 |-------------|-------------|--------------|----------------|------|------|------|
