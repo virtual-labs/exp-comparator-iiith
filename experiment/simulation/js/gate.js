@@ -297,7 +297,6 @@ export function simulate() {
             }
         }
     }
-    
     // Displays message confirming Simulation completion
     let message = "Simulation has finished";
     const result = document.getElementById('result');
