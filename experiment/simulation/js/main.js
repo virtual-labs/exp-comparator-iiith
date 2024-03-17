@@ -1,4 +1,5 @@
 import * as gatejs from "./gate.js";
+import * as fajs from "./fa.js";
 import { wireColours } from "./layout.js";
 'use strict';
 let num_wires = 0;
@@ -49,7 +50,7 @@ export const connectGate = function () {
             return false;
         } else if (start_uuid === "output" && end_uuid === "output") {
             return false;
-        } else if ((end_uuid==="input" && toEndpoint.connections.length > 0) || (start_uuid==="input" && fromEndpoint.connections.length>1)) {
+        } else if ((end_uuid === "input" && toEndpoint.connections.length > 0) || (start_uuid === "input" && fromEndpoint.connections.length > 1)) {
             // If it already has a connection, do not establish a new connection
             return false;
         } else {
@@ -63,14 +64,249 @@ export const connectGate = function () {
             if (start_uuid === "output") {
                 let input = gatejs.gates[fromEndpoint.elementId];
                 input.isConnected = true;
-                gatejs.gates[toEndpoint.elementId].addInput(input);
+                gatejs.gates[toEndpoint.elementId].addInput(input,"");
                 input.addOutput(gatejs.gates[toEndpoint.elementId]);
             } else if (end_uuid === "output") {
                 let input = gatejs.gates[toEndpoint.elementId];
                 input.isConnected = true;
-                gatejs.gates[fromEndpoint.elementId].addInput(input);
+                gatejs.gates[fromEndpoint.elementId].addInput(input,"");
                 input.addOutput(gatejs.gates[fromEndpoint.elementId]);
             }
+        }
+    });
+};
+
+// This is an event listener for establishing connections between Full adders and gates
+export const connectFA = function () {
+    jsPlumbInstance.bind("beforeDrop", function (data) {
+        const fromEndpoint = data.connection.endpoints[0];
+        const toEndpoint = data.dropEndpoint;
+
+        const start_uuid = fromEndpoint.uuid.split(":")[0];
+        const end_uuid = toEndpoint.uuid.split(":")[0];
+
+        if (fromEndpoint.elementId == toEndpoint.elementId) {
+            return false;
+        }
+
+        if (start_uuid === "input" && end_uuid === "input") {
+            return false;
+        } else if (start_uuid === "output" && end_uuid === "output") {
+            return false;
+        } else if ((end_uuid === "input" && toEndpoint.connections.length > 0) || (start_uuid === "input" && fromEndpoint.connections.length > 1)) {
+            // If it already has a connection, do not establish a new connection
+            return false;
+        } else {
+            jsPlumbInstance.connect({
+                uuids: [fromEndpoint.uuid, toEndpoint.uuid],
+                paintStyle: { stroke: wireColours[num_wires], strokeWidth: 4 },
+            });
+            num_wires++;
+            num_wires = num_wires % wireColours.length;
+            const start_type = fromEndpoint.elementId.split("-")[0];
+            const end_type = toEndpoint.elementId.split("-")[0];
+            console.log(start_type, end_type);
+            if (start_type === "FullAdder" && end_type === "FullAdder") {
+                if (start_uuid === "output") {
+                    const input = fajs.fullAdder[fromEndpoint.elementId];
+                    let pos = "";
+                    if (Object.keys(fromEndpoint.overlays)[0].includes("sum")) {
+                        pos = "Sum";
+                        input.addSum(fajs.fullAdder[toEndpoint.elementId]);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("cout")) {
+                        pos = "Carry";
+                        input.addCout(fajs.fullAdder[toEndpoint.elementId]);
+                    }
+                    input.setConnected(true, pos);
+                    if (Object.keys(toEndpoint.overlays)[0].includes("a")) {
+                        fajs.fullAdder[toEndpoint.elementId].setA0([input, pos]);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("b")) {
+                        fajs.fullAdder[toEndpoint.elementId].setB0([input, pos]);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("cin")) {
+                        fajs.fullAdder[toEndpoint.elementId].setCin([input, pos]);
+                    }
+                } else if (end_uuid === "output") {
+                    const input = fajs.fullAdder[toEndpoint.elementId];
+                    let pos = "";
+                    if (Object.keys(toEndpoint.overlays)[0].includes("sum")) {
+                        pos = "Sum";
+                        input.addSum(fajs.fullAdder[fromEndpoint.elementId]);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("cout")) {
+                        pos = "Carry";
+                        input.addCout(fajs.fullAdder[fromEndpoint.elementId]);
+                    }
+                    input.setConnected(true, pos);
+                    if (Object.keys(fromEndpoint.overlays)[0].includes("a")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setA0([input, pos]);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("b")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setB0([input, pos]);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("cin")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setCin([input, pos]);
+                    }
+                }
+            } else if (start_type === "FullAdder" && end_type === "Input") {
+                if (end_uuid === "output") {
+                    const input = gatejs.gates[toEndpoint.elementId];
+                    input.setConnected(true);
+                    let pos = "";
+                    if (Object.keys(fromEndpoint.overlays)[0].includes("a")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setA0([input, pos]);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("b")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setB0([input, pos]);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("cin")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setCin([input, pos]);
+                    }
+                    input.addOutput(fajs.fullAdder[fromEndpoint.elementId]);
+                }
+            } else if (start_type === "Input" && end_type === "FullAdder") {
+                if (start_uuid === "output") {
+                    const input = gatejs.gates[fromEndpoint.elementId];
+                    input.setConnected(true);
+                    let pos = "";
+                    if (Object.keys(toEndpoint.overlays)[0].includes("a")) {
+                        fajs.fullAdder[toEndpoint.elementId].setA0([input, pos]);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("b")) {
+                        fajs.fullAdder[toEndpoint.elementId].setB0([input, pos]);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("cin")) {
+                        fajs.fullAdder[toEndpoint.elementId].setCin([input, pos]);
+                    }
+                    input.addOutput(fajs.fullAdder[toEndpoint.elementId]);
+                }
+            } else if (start_type === "FullAdder" && end_type === "Output") {
+                if (start_uuid === "output") {
+                    const input = fajs.fullAdder[fromEndpoint.elementId];
+                    const output = gatejs.gates[toEndpoint.elementId];
+                    let pos = "";
+                    if (Object.keys(fromEndpoint.overlays)[0].includes("sum")) {
+                        pos = "Sum";
+                        input.addSum(output);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("cout")) {
+                        pos = "Carry";
+                        input.addCout(output);
+                    }
+                    input.setConnected(true, pos);
+                    output.addInput(input,pos);
+                    fajs.finalOutputs[toEndpoint.elementId] = [input, pos];
+                }
+            } else if (start_type === "Output" && end_type === "FullAdder") {
+                if (start_uuid === "input") {
+                    const input = fajs.fullAdder[toEndpoint.elementId];
+                    const output = gatejs.gates[fromEndpoint.elementId];
+                    let pos = "";
+                    if (Object.keys(toEndpoint.overlays)[0].includes("sum")) {
+                        pos = "Sum";
+                        input.addSum(output);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("carry")) {
+                        pos = "Carry";
+                        input.addCout(output);
+                    }
+                    input.setConnected(true, pos);
+                    output.addInput(input,pos);
+                    fajs.finalOutputs[fromEndpoint.elementId] = [input, pos];
+                }
+            } else if (start_type === "FullAdder" && (end_type !== "FullAdder" && end_type !== "Input" && end_type !== "Output")) {
+                if (end_uuid === "output") {
+                    const input = gatejs.gates[toEndpoint.elementId];
+                    input.setConnected(true);
+                    let pos = "";
+                    if (Object.keys(fromEndpoint.overlays)[0].includes("a")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setA0([input, pos]);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("b")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setB0([input, pos]);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("cin")) {
+                        fajs.fullAdder[fromEndpoint.elementId].setCin([input, pos]);
+                    }
+                    input.addOutput(fajs.fullAdder[fromEndpoint.elementId]);
+                }
+                else if (start_uuid === "output") {
+                    const input = fajs.fullAdder[fromEndpoint.elementId];
+                    const output = gatejs.gates[toEndpoint.elementId];
+                    let pos = "";
+                    if (Object.keys(fromEndpoint.overlays)[0].includes("sum")) {
+                        pos = "Sum";
+                        input.addSum(output);
+                    } else if (Object.keys(fromEndpoint.overlays)[0].includes("cout")) {
+                        pos = "Carry";
+                        input.addCout(output);
+                    }
+                    input.setConnected(true, pos);
+                    console.log(output.inputs.length)
+                    output.addInput(input,pos);
+                    console.log(output.inputs.length)
+                }
+            } else if ((start_type !== "FullAdder" && start_type !== "Input" && start_type !== "Output") && end_type === "FullAdder") {
+                if (start_uuid === "output") {
+                    const input = gatejs.gates[fromEndpoint.elementId];
+                    input.setConnected(true);
+                    let pos = "";
+                    if (Object.keys(toEndpoint.overlays)[0].includes("a")) {
+                        fajs.fullAdder[toEndpoint.elementId].setA0([input, pos]);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("b")) {
+                        fajs.fullAdder[toEndpoint.elementId].setB0([input, pos]);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("cin")) {
+                        fajs.fullAdder[toEndpoint.elementId].setCin([input, pos]);
+                    }
+                    input.addOutput(fajs.fullAdder[toEndpoint.elementId]);
+                } else if (start_uuid === "input") {
+                    const input = fajs.fullAdder[toEndpoint.elementId];
+                    const output = gatejs.gates[fromEndpoint.elementId];
+                    let pos = "";
+                    if (Object.keys(toEndpoint.overlays)[0].includes("sum")) {
+                        pos = "Sum";
+                        input.addSum(output);
+                    } else if (Object.keys(toEndpoint.overlays)[0].includes("carry")) {
+                        pos = "Carry";
+                        input.addCout(output);
+                    }
+                    input.setConnected(true, pos);
+                    output.addInput(input,pos);
+                }
+            } else if ((start_type !== "FullAdder" && start_type !== "Output") && end_type === "Output") {
+                if (start_uuid === "output") {
+                    const input = gatejs.gates[fromEndpoint.elementId];
+                    const output = gatejs.gates[toEndpoint.elementId];
+                    input.setConnected(true);
+                    output.addInput(input,"");
+                    fajs.finalOutputs[toEndpoint.elementId] = [input, ""];
+                    input.addOutput(output);
+                }
+            } else if (start_type === "Output" && (end_type !== "Output" && end_type !== "FullAdder")) {
+                if (start_uuid === "input") {
+                    const input = gatejs.gates[toEndpoint.elementId];
+                    const output = gatejs.gates[fromEndpoint.elementId];
+                    input.setConnected(true);
+                    output.addInput(input,"");
+                    fajs.finalOutputs[fromEndpoint.elementId] = [input, ""];
+                    input.addOutput(output);
+                }
+            } else {
+                if (start_uuid === "output") {
+                    let input = gatejs.gates[fromEndpoint.elementId];
+                    input.isConnected = true;
+                    gatejs.gates[toEndpoint.elementId].addInput(input,"");
+                    input.addOutput(gatejs.gates[toEndpoint.elementId]);
+                } else if (end_uuid === "output") {
+                    let input = gatejs.gates[toEndpoint.elementId];
+                    input.isConnected = true;
+                    gatejs.gates[fromEndpoint.elementId].addInput(input,"");
+                    input.addOutput(gatejs.gates[fromEndpoint.elementId]);
+                }
+                if (end_type === "Output") {
+                    const input = gatejs.gates[fromEndpoint.elementId];
+                    fajs.finalOutputs[toEndpoint.elementId] = [input, ""];
+                    // input.isConnected = true;
+                    // gatejs.gates[toEndpoint.elementId].addInput(input);
+                    // input.addOutput(gatejs.gates[toEndpoint.elementId]);
+                }
+                if (start_type === "Output") {
+                    const input = gatejs.gates[toEndpoint.elementId];
+                    fajs.finalOutputs[fromEndpoint.elementId] = [input, ""];
+                    // input.isConnected = true;
+                    // gatejs.gates[fromEndpoint.elementId].addInput(input);
+                    // input.addOutput(gatejs.gates[fromEndpoint.elementId]);
+                }
+            }
+            // return true;
         }
     });
 };
@@ -140,7 +376,7 @@ export function registerGate(id, gate) {
                 uuid: "output:0:" + id,
             })
         );
-    } 
+    }
     else if (gateType === "THREEIPNAND") {
         gate.addInputPoints(
             jsPlumbInstance.addEndpoint(element, {
@@ -198,6 +434,87 @@ export function registerGate(id, gate) {
                 uuid: "input:0:" + id,
             })
         );
+    } else if (gateType === "FullAdder") {
+        // carry output
+        gate.addOutputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [0, 0.5, -1, 0, -7, 0],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "output:0:" + id,
+                overlays: [
+                    {
+                        type: "Label",
+                        options: { label: "Cout", id: "cout", location: [3, 0.2] },
+                    },
+                ],
+            })
+        );
+        // sum output
+        gate.addOutputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [0.5, 1, 0, 1, 0, 7],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "output:1:" + id,
+                overlays: [
+                    {
+                        type: "Label",
+                        options: { label: "Sum", id: "sum", location: [0.3, -1.7] },
+                    },
+                ],
+            })
+        );
+        // input A0
+        gate.addInputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [0.5, 0, 0, -1, -25, -7],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "input:0:" + id,
+                overlays: [
+                    {
+                        type: "Label",
+                        options: { label: "A0", id: "a0", location: [0.3, 1.7] },
+                    },
+                ],
+            })
+        );
+        // input B0
+        gate.addInputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [0.5, 0, 0, -1, 25, -7],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "input:1:" + id,
+                overlays: [
+                    {
+                        type: "Label",
+                        options: { label: "B0", id: "b0", location: [0.3, 1.7] },
+                    },
+                ],
+            })
+        );
+        // carry input
+        gate.addInputPoints(
+            jsPlumbInstance.addEndpoint(element, {
+                anchor: [1, 0.5, 1, 0, 7, 0],
+                source: true,
+                target: true,
+                connectionsDetachable: false,
+                uuid: "input:2:" + id,
+                overlays: [
+                    {
+                        type: "Label",
+                        options: { label: "Cin", id: "cin", location: [-1, 0.2] },
+                    },
+                ],
+            })
+        );
     }
 }
 export function initComparator() {
@@ -223,6 +540,31 @@ export function initComparator() {
         gate.registerComponent("working-area", positions[i].x, positions[i].y);;
     }
 }
+export function initComparator1() {
+    const ids = ["Input-0", "Input-1", "Input-2", "Input-3", "Input-7", "Output-4", "Output-5", "Output-6"]; // [A B Sum Carry Out]
+    const types = ["Input", "Input", "Input", "Input", "Input", "Output", "Output", "Output"];
+    const names = ["A0", "A1", "B0", "B1", "Cin", "A&gt;B", "A&lt;B", "A=B"];
+    const positions = [
+        { x: 300, y: 50 },
+        { x: 230, y: 50 },
+        { x: 160, y: 50 },
+        { x: 90, y: 50 },
+        { x: 20, y: 50 },
+        { x: 820, y: 400 },
+        { x: 820, y: 600 },
+        { x: 820, y: 200 },
+    ];
+    for (let i = 0; i < ids.length; i++) {
+        let gate = new gatejs.Gate(types[i]);
+        gate.setId(ids[i]);
+        gate.setName(names[i]);
+        const component = gate.generateComponent();
+        const parent = document.getElementById("working-area");
+        parent.insertAdjacentHTML('beforeend', component);
+        gate.registerComponent("working-area", positions[i].x, positions[i].y);;
+    }
+}
+
 
 
 export function refreshWorkingArea() {
@@ -230,6 +572,7 @@ export function refreshWorkingArea() {
     window.numComponents = 0;
 
     gatejs.clearGates();
+    fajs.clearFAs();
 }
 
 // window.getInfo = function () {
