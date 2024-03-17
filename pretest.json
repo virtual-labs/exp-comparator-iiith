@@ -1,0 +1,66 @@
+{
+    "version": 2.0,
+    "questions": [
+        {
+            "question": "1. Compare the 2 binary numbers A = 11001 and B = 10101",
+            "answers": {
+                "a": "A > B",
+                "b": "A < B",
+                "c": "A = B",
+                "d": "Can't be determined"
+            },
+            "correctAnswer": "a",
+            "explanations": {},
+            "difficulty": "beginner"
+        },
+        {
+
+            "question": "2. During bitwise comparison of 2 binary numbers A = 1001010010 and B = 1011000110, with comparison of minimum number of bits, how many bits need to be compared to determine the comparison of two numbers:",
+            "answers": {
+                "a": "2",
+                "b": "3",
+                "c": "4",
+                "d": "5"
+            },
+            "correctAnswer": "b",
+            "explanations": {},
+            "difficulty": "advanced"
+        },
+        {
+            "question": "3. Which of the following expressions represents output for A>B:",
+            "answers": {
+                "a": "AB'",
+                "b": "A'B",
+                "c": "A'B' + AB",
+                "d": "A|B ^ A&B"
+            },
+            "correctAnswer": "a",
+            "explanations": {},
+            "difficulty": "intermediate"
+        },
+        {
+            "question": "4. Which of the following expressions represents output for A=B:",
+            "answers": {
+                "a": "AB'",
+                "b": "A'B",
+                "c": "A'B' + AB",
+                "d": "A|B ^ A&B"
+            },
+            "correctAnswer": "c",
+            "explanations": {},
+            "difficulty": "intermediate"
+        },
+        {
+            "question": "5. Which of the following are examples of comparators:",
+            "answers": {
+                "a": "CMOS 4063",
+                "b": "CMOS 4585",
+                "c": "TTL 7485",
+                "d": "All of these"
+            },
+            "correctAnswer": "d",
+            "explanations": {},
+            "difficulty": "beginner"
+        }
+    ]
+}
