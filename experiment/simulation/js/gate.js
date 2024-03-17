@@ -7,8 +7,10 @@ import {
     computeXor,
     computeXnor,
     computeNand,
-    computeNor
+    computeNor,
+    testComparator1
 } from "./validator.js";
+import { checkConnectionsFA, getOutputFA, finalOutputs } from "./fa.js";
 
 'use strict';
 export let gates = {}; // Dictionary of gates with their IDs as keys
@@ -31,6 +33,7 @@ export class Gate {
         this.inputPoints = [];
         this.outputPoints = [];
         this.inputs = []; // List of input gates
+        this.input_pos = [] //pos of input gates/fa
         this.outputs=[];
         this.output = null; // Output value
         this.isInput = false;
@@ -42,8 +45,9 @@ export class Gate {
         this.id = id;
     }
     // Adds input to the gate
-    addInput(gate) {
+    addInput(gate,pos) {
         this.inputs.push(gate);
+        this.input_pos.push(pos)
     }
 
     addOutput(gate) {
@@ -55,6 +59,7 @@ export class Gate {
         for (let i = this.inputs.length - 1; i >= 0; i--) {
             if (this.inputs[i] === gate) {
               this.inputs.splice(i, 1);
+              this.input_pos.splice(i, 1);
             }
         }
     }
@@ -147,32 +152,32 @@ export class Gate {
     // Generates the output of the gate
     generateOutput() {
         switch (this.type) {
-            case "AND":
-                this.output = computeAnd(this.inputs[0].output, this.inputs[1].output);
+            case "AND":      
+                this.output = computeAnd(getOutputFA(this.inputs[0],this.input_pos[0]),getOutputFA(this.inputs[1],this.input_pos[1]));
                 break;
             case "OR":
-                this.output = computeOr(this.inputs[0].output, this.inputs[1].output);
+                this.output = computeOr(getOutputFA(this.inputs[0],this.input_pos[0]),getOutputFA(this.inputs[1],this.input_pos[1]));
                 break;
             case "NOT":
-                this.output = !this.inputs[0].output;
+                this.output = !(getOutputFA(this.inputs[0],this.input_pos[0]));
                 break;
             case "NAND":
-                this.output = computeNand(this.inputs[0].output, this.inputs[1].output);
+                this.output = computeNand(getOutputFA(this.inputs[0],this.input_pos[0]),getOutputFA(this.inputs[1],this.input_pos[1]));
                 break;
             case "THREEIPNAND":
-                this.output = computeNand(computeAnd(this.inputs[0].output, this.inputs[1].output), this.inputs[2].output);
+                this.output = computeNand(computeAnd(getOutputFA(this.inputs[0],this.input_pos[0]), getOutputFA(this.inputs[1],this.input_pos[1])), getOutputFA(this.inputs[2],this.input_pos[2]));
                 break;
             case "NOR":
-                this.output = computeNor(this.inputs[0].output, this.inputs[1].output);
+                this.output = computeNor(getOutputFA(this.inputs[0],this.input_pos[0]),getOutputFA(this.inputs[1],this.input_pos[1]));
                 break;
             case "XOR":
-                this.output = computeXor(this.inputs[0].output, this.inputs[1].output);
+                this.output = computeXor(getOutputFA(this.inputs[0],this.input_pos[0]),getOutputFA(this.inputs[1],this.input_pos[1]));
                 break;
             case "XNOR":
-                this.output = computeXnor(this.inputs[0].output, this.inputs[1].output);
+                this.output = computeXnor(getOutputFA(this.inputs[0],this.input_pos[0]),getOutputFA(this.inputs[1],this.input_pos[1]));
                 break;
             case "Output":
-                this.output = this.inputs[0].output;
+                this.output = getOutputFA(this.inputs[0],this.input_pos[0]);
                 break;
         }
     }
@@ -259,9 +264,11 @@ export function checkConnections() {
         const gate = gates[gateId];
         const id = document.getElementById(gate.id);
         if (gate.inputPoints.length != gate.inputs.length) {
+            console.log(gate.inputPoints.length, gate.inputs.length)
             printErrors("Highlighted component not connected properly\n",id);
             return false;
         } else if ((gate.isConnected === false || gate.outputs.length===0) && gate.isOutput === false) {
+            console.log("hey2")
             printErrors("Highlighted component not connected properly\n",id);
             return false;
         }
@@ -340,6 +347,11 @@ export function submitCircuit() {
         return;
         testComparator("Input-0", "Input-1", "Input-2", "Input-3", "Output-4", "Output-5", "Output-6");
     }
+    else if (window.currentTab === "task2") {
+        if(!checkConnectionsFA() || !checkConnections())
+        return;
+        testComparator1("Input-0", "Input-1", "Input-2", "Input-3", "Output-4", "Output-5", "Output-6");
+    }
     
     // Refresh the input bit values to default 1 and output bit values to default empty black circles after submitting
     for (let gateId in gates) {
@@ -374,7 +386,17 @@ export function deleteElement(gateid) {
             gates[elem].removeOutput(gate);
         }
     }
+    for (let key in finalOutputs) {
+        if (finalOutputs[key][0] === gate) {
+          console.log(finalOutputs[gate])
+          delete finalOutputs[key];
+          gates[key].inputs = [];
+          gates[key].input_pos = [];
+        }
+      }
+    console.log(gate)
     delete gates[gateid];
+    console.log(gates[gateid])
 }
 
 
