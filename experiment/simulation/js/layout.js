@@ -1,6 +1,6 @@
-import { simulate, deleteElement } from "./gate.js";
+import { simulate} from "./gate.js";
 import { connectGate, unbindEvent, initComparator, initComparator1, refreshWorkingArea, connectFA } from "./main.js";
-import { simulateAS, deleteFA} from "./fa.js";
+import { simulateAS} from "./fa.js";
 
 "use strict";
 // Wires Colours
@@ -19,38 +19,6 @@ export const wireColours = [
   "#c0c0c0",
 ];
 
-// Contextmenu
-const menu = document.querySelector(".menu");
-const menuOption = document.querySelector(".menu-option");
-
-export const setPosition = ({ top, left }) => {
-  menu.style.left = `${left}px`;
-  menu.style.top = `${top}px`;
-  menu.style.display = "block";
-};
-
-window.addEventListener("click", e => {
-  if (menu.style.display != "none")
-  {
-    menu.style.display = "none";
-  }
-  window.selectedComponent = null;
-  window.componentType = null;
-});
-
-menuOption.addEventListener("click", e => {
-  if (e.target.innerHTML === "Delete") {
-    if (window.componentType === "gate") {
-      deleteElement(window.selectedComponent);
-    }
-    else if(window.componentType === "fullAdder"){
-      console.log("deleted")
-      deleteFA(window.selectedComponent);
-    }
-  }
-  window.selectedComponent = null;
-  window.componentType = null;
-});
 
 // Tabs
 
