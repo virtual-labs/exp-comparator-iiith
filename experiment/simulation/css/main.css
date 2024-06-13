@@ -1,6 +1,6 @@
 .window { z-index:20; }
 .jtk-connector { z-index:4; }
-.jtk-connector { z-index:4; stroke-width: 7;}
+.jtk-connector :hover{ z-index:4; stroke-width: 7;}
 .jtk-endpoint { z-index:5; }
 .jtk-overlay { z-index:6; }
 
@@ -244,7 +244,7 @@ svg.wire path {
 
 .menu {
   width: 120px;
-  z-index: 1;
+  z-index: 8;
   box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
   background-color: #fff;
   position: fixed;
