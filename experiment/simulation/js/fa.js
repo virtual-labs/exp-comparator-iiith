@@ -1,13 +1,36 @@
 import { registerGate, jsPlumbInstance } from "./main.js";
 import { setPosition } from "./main.js";
 import { checkConnections, clearResult, gates, printErrors } from "./gate.js";
-import {
-  computeAnd,
-  computeOr,
-  computeXor
-} from "./validator.js";
+import { computeAnd, computeOr, computeXor } from "./validator.js";
 
-"use strict";
+("use strict");
+
+// Utility function to safely delete JSPlumb connections
+function safeDeleteConnection(connection) {
+  try {
+    jsPlumbInstance.deleteConnection(connection);
+    return true;
+  } catch (error) {
+    console.log("JSPlumb deleteConnection failed:", error);
+    // Try to remove the DOM element as fallback
+    try {
+      if (
+        connection.connector &&
+        connection.connector.canvas &&
+        connection.connector.canvas.parentNode
+      ) {
+        connection.connector.canvas.parentNode.removeChild(
+          connection.connector.canvas
+        );
+        return true;
+      }
+    } catch (domError) {
+      console.log("DOM removal also failed:", domError);
+    }
+    return false;
+  }
+}
+
 // Dictionary of all full adders in the circuit with their IDs as keys
 export let fullAdder = {};
 
@@ -22,7 +45,7 @@ export function clearFAs() {
 export const finalOutputs = {
   "Output-4": [],
   "Output-5": [],
-  "Output-6": []
+  "Output-6": [],
 };
 
 export class FullAdder {
@@ -44,6 +67,14 @@ export class FullAdder {
 
   // Adds element to the circuit board, adds event listeners and generates its endpoints.
   registerComponent(workingArea, x = 0, y = 0) {
+    // get width of working area
+    const width = document.getElementById(workingArea).offsetWidth;
+    const height = document.getElementById(workingArea).offsetHeight;
+    let scale = 900;
+    let yScale = 800;
+    x = (x / scale) * width;
+    y = (y / yScale) * height;
+
     const parent = document.getElementById(workingArea);
     parent.insertAdjacentHTML("beforeend", this.component);
     const el = document.getElementById(this.id);
@@ -69,6 +100,8 @@ export class FullAdder {
 
     fullAdder[this.id] = this;
     registerGate(this.id, this);
+
+    this.updatePosition(this.id);
   }
 
   // Sets values of the inputs and outputs of the full adder
@@ -98,7 +131,15 @@ export class FullAdder {
 
   addSum(gate) {
     this.outSum.push(gate);
-  } 
+  }
+
+  // Update position coordinates
+  updatePosition(id) {
+    this.positionY =
+      window.scrollY + document.getElementById(id).getBoundingClientRect().top; // Y
+    this.positionX =
+      window.scrollX + document.getElementById(id).getBoundingClientRect().left; // X
+  }
 
   // adds input endpoints points to the list of input points
   addInputPoints(input) {
@@ -112,20 +153,20 @@ export class FullAdder {
 
   // Removes the selected gates from outCout and outSum
   removeoutCout(gate) {
-   for (let i = this.outCout.length - 1; i >= 0; i--) {
-       if (this.outCout[i] === gate) {
-         this.outCout.splice(i, 1);
-       }
-       }
-}
+    for (let i = this.outCout.length - 1; i >= 0; i--) {
+      if (this.outCout[i] === gate) {
+        this.outCout.splice(i, 1);
+      }
+    }
+  }
 
   removeoutSum(gate) {
     // Find and remove all occurrences of gate
-  for (let i = this.outSum.length - 1; i >= 0; i--) {
-    if (this.outSum[i] === gate) {
-      this.outSum.splice(i, 1);
+    for (let i = this.outSum.length - 1; i >= 0; i--) {
+      if (this.outSum[i] === gate) {
+        this.outSum.splice(i, 1);
+      }
     }
-  }
   }
 
   generateOutput() {
@@ -174,7 +215,7 @@ export function getOutputFA(gate, pos) {
   }
   // But if the gate is not an FA, but an input bit, then return the value of the input
   else {
-    console.log(gate,pos)
+    console.log(gate, pos);
     return gate.output;
   }
 }
@@ -211,48 +252,43 @@ export function checkConnectionsFA() {
     const gate = fullAdder[faID];
     const id = document.getElementById(gate.id);
     if (gate.coutIsConnected === false || gate.outCout.length === 0) {
-      printErrors("Cout of Full Adder not connected\n",id);
+      printErrors("Cout of Full Adder not connected\n", id);
       return false;
-
     }
     if (gate.sumIsConnected === false || gate.outSum.length === 0) {
-      printErrors("Sum of Full Adder not connected\n",id);
+      printErrors("Sum of Full Adder not connected\n", id);
       return false;
-
     }
 
     // Check if all the inputs are connected
     if (gate.a0 == null || gate.a0.length === 0) {
-      printErrors("A0 of Full Adder not connected\n",id);
+      printErrors("A0 of Full Adder not connected\n", id);
       return false;
-
     }
     if (gate.b0 == null || gate.b0.length === 0) {
-      printErrors("B0 of Full Adder not connected\n",id);
+      printErrors("B0 of Full Adder not connected\n", id);
       return false;
-
     }
     if (gate.cin == null || gate.cin.length === 0) {
-      printErrors("Cin of Full Adder not connected\n",id);
+      printErrors("Cin of Full Adder not connected\n", id);
       return false;
-
     }
   }
   for (let gateId in gates) {
     const gate = gates[gateId];
     const id = document.getElementById(gate.id);
     if (gate.isInput) {
-      if (gate.isConnected === false || gate.outputs.length===0) {
-        printErrors("Highlighted component not connected properly\n",id);
-        console.log("hey3")
+      if (gate.isConnected === false || gate.outputs.length === 0) {
+        printErrors("Highlighted component not connected properly\n", id);
+        console.log("hey3");
         return false;
       }
     }
     if (gate.isOutput) {
       if (gate.inputs.length === 0) {
-        console.log(gate.inputs)
-        printErrors("Highlighted component not connected properly\n",id);
-        console.log("hey4")
+        console.log(gate.inputs);
+        printErrors("Highlighted component not connected properly\n", id);
+        console.log("hey4");
         return false;
       }
     }
@@ -300,28 +336,33 @@ export function simulateFA() {
 
   // Displays message confirming Simulation completion
   let message = "Simulation has finished";
-  const result = document.getElementById('result');
+  const result = document.getElementById("result");
   result.innerHTML += message;
   result.className = "success-message";
   setTimeout(clearResult, 2000);
-  
 }
 
-export function getResultAS(node){
+export function getResultAS(node) {
   // check if fa type is Gate object
   if (node.constructor.name === "Gate") {
     for (let i = 0; i < node.inputs.length; i++) {
-      if (node.inputs[i].constructor.name!== "FullAdder" && node.inputs[i].output == null) {
-          getResultAS(node.inputs[i]);
-      }
-      else if(node.inputs[i].constructor.name === "FullAdder" && node.inputs[i].sum === null && node.inputs[i].cout === null){
+      if (
+        node.inputs[i].constructor.name !== "FullAdder" &&
+        node.inputs[i].output == null
+      ) {
+        getResultAS(node.inputs[i]);
+      } else if (
+        node.inputs[i].constructor.name === "FullAdder" &&
+        node.inputs[i].sum === null &&
+        node.inputs[i].cout === null
+      ) {
         getResultAS(node.inputs[i]);
       }
-    } 
+    }
     node.generateOutput();
     return;
   }
-  
+
   let fa = node;
 
   if (fa.cout != null && fa.sum != null) {
@@ -372,7 +413,7 @@ export function simulateAS() {
 
   for (let key in finalOutputs) {
     let element = document.getElementById(key);
-    console.log(finalOutputs[key])
+    console.log(finalOutputs[key]);
     gates[key].output = getOutputFA(finalOutputs[key][0], finalOutputs[key][1]);
     if (gates[key].output) {
       element.className = "high";
@@ -385,11 +426,10 @@ export function simulateAS() {
 
   // Displays message confirming Simulation completion
   let message = "Simulation has finished";
-  const result = document.getElementById('result');
+  const result = document.getElementById("result");
   result.innerHTML += message;
   result.className = "success-message";
   setTimeout(clearResult, 2000);
-  
 }
 
 // Simulates the circuit for given fulladders and gates; Used for testing the circuit for all values
@@ -455,50 +495,92 @@ export function testSimulationAS(fA, gates) {
 
 // Delete Full Adder
 export function deleteFA(id) {
-  const fa = fullAdder[id];
-  jsPlumbInstance.removeAllEndpoints(document.getElementById(fa.id));
-  jsPlumbInstance._removeElement(document.getElementById(fa.id));
+  try {
+    const fa = fullAdder[id];
+    if (!fa) {
+      console.log("Full Adder not found:", id);
+      return;
+    }
 
-  for (let key in fullAdder) {
-    if (fullAdder[key].id === id) {
-      delete fullAdder[key];
-      continue;
+    const element = document.getElementById(fa.id);
+    if (!element) {
+      console.log("DOM element not found for full adder:", id);
+      delete fullAdder[id];
+      return;
     }
-    if (fullAdder[key].a0[0] === fa) {
-      fullAdder[key].a0 = null;
-    }
-    if (fullAdder[key].b0[0] === fa) {
-      fullAdder[key].b0 = null;
-    }
-    if (fullAdder[key].cin[0] === fa) {
-      fullAdder[key].cin = null;
-    }
-    if(fullAdder[key].outCout.includes(fa)){
-      fullAdder[key].removeoutCout(fa);
-    }
-    if(fullAdder[key].outSum.includes(fa)){
-      fullAdder[key].removeoutSum(fa);
- }
-  }
 
-  for (let key in finalOutputs) {
-    if (finalOutputs[key][0] === fa) {
-      console.log(finalOutputs[key])
-      delete finalOutputs[key];
-      gates[key].inputs = [];
-      gates[key].input_pos = [];
+    // First, manually delete all connections to avoid JSPlumb cleanup issues
+    try {
+      const connections = jsPlumbInstance.getConnections({ source: element });
+      connections.forEach((conn) => safeDeleteConnection(conn));
+    } catch (e) {
+      console.log("Error getting source connections:", e);
     }
-  }
 
-  for (let elem in gates) {
-    if (gates[elem].inputs.includes(fa)) {
-      console.log(gates[elem])
-      gates[elem].removeInput(fa);
+    try {
+      const connections = jsPlumbInstance.getConnections({ target: element });
+      connections.forEach((conn) => safeDeleteConnection(conn));
+    } catch (e) {
+      console.log("Error getting target connections:", e);
     }
-    if(gates[elem].outputs.includes(fa)) {
-      gates[elem].removeOutput(fa);
-      if(gates[elem].isInput && gates[elem].outputs.length ==0)
-      gates[elem].setConnected(false);
+
+    // Now safely remove endpoints
+    try {
+      jsPlumbInstance.removeAllEndpoints(element);
+    } catch (e) {
+      console.log("Error removing endpoints:", e);
     }
+
+    // Remove the DOM element safely
+    if (element && element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
+
+    for (let key in fullAdder) {
+      if (fullAdder[key].id === id) {
+        delete fullAdder[key];
+        continue;
+      }
+      if (fullAdder[key].a0[0] === fa) {
+        fullAdder[key].a0 = null;
+      }
+      if (fullAdder[key].b0[0] === fa) {
+        fullAdder[key].b0 = null;
+      }
+      if (fullAdder[key].cin[0] === fa) {
+        fullAdder[key].cin = null;
+      }
+      if (fullAdder[key].outCout.includes(fa)) {
+        fullAdder[key].removeoutCout(fa);
+      }
+      if (fullAdder[key].outSum.includes(fa)) {
+        fullAdder[key].removeoutSum(fa);
+      }
+    }
+
+    for (let key in finalOutputs) {
+      if (finalOutputs[key][0] === fa) {
+        delete finalOutputs[key];
+        if (gates[key]) {
+          gates[key].inputs = [];
+          gates[key].input_pos = [];
+        }
+      }
+    }
+
+    for (let elem in gates) {
+      if (gates[elem].inputs.includes(fa)) {
+        gates[elem].removeInput(fa);
+      }
+      if (gates[elem].outputs.includes(fa)) {
+        gates[elem].removeOutput(fa);
+        if (gates[elem].isInput && gates[elem].outputs.length == 0)
+          gates[elem].setConnected(false);
+      }
+    }
+
+    console.log("Full Adder deleted successfully:", id);
+  } catch (error) {
+    console.error("Error deleting full adder:", error);
   }
 }

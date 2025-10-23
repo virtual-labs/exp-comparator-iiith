@@ -1,67 +1,90 @@
 {
-    "version": 2.0,
-    "questions": [
-        {
-            "question": "1. If the input to a comparator is a sine wave, the output is a:",
-            "answers": {
-                "a": "ramp voltage",
-                "b": "sine wave",
-                "c": "rectangular wave",
-                "d": "saw tooth wave"
-            },
-            "correctAnswer": "c",
-            "explanations": {},
-            "difficulty": "advanced"
-        },
-        {
-            "question": "2. A comparator circuit can be used to:",
-            "answers": {
-                "a": "Mark the instant when an arbitrary waveform attains some reference level",
-                "b": "Mark the instant when the input voltage becomes constant",
-                "c": "Switch ON and OFF a circuit alternately at a particular rate",
-                "d": "Switch OFF a circuit when output becomes zero"
-            },
-            "correctAnswer": "a",
-            "explanations": {},
-            "difficulty": "intermediate"
-        },
-        {
-            "question": "3. Number of outputs in the comparator circuit is:",
-            "answers": {
-                "a": "1",
-                "b": "2",
-                "c": "3",
-                "d": "4"
-            },
-            "correctAnswer": "c",
-            "explanations": {
-                "c": "One output for each of the comparison (greater than, less than, equal to)"
-            },
-            "difficulty": "beginner"
-        },
-        {
-            "question": "4. Which of the following gates is not used in a 2 bit comparator circuit:",
-            "answers": {
-                "a": "NAND",
-                "b": "AND",
-                "c": "XNOR",
-                "d": "OR"
-            },
-            "correctAnswer": "d",
-            "explanations": {},
-            "difficulty": "intermediate"
-        },
-        {
-            "question": "5. If two out of the three outputs are known, the third can be inferred as:",
-            "answers": {
-                "a": "Always true",
-                "b": "Sometimes true",
-                "c": "Always False",
-                "d": "Can't say"
-            },
-            "correctAnswer": "d",
-            "explanations": {},
-            "difficulty": "beginner"
-        }
-    ]
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "1. In a 2-bit digital comparator with inputs A₁A₀ = 10 and B₁B₀ = 01, what will be the output condition:",
+      "answers": {
+        "a": "A > B",
+        "b": "A < B",
+        "c": "A = B",
+        "d": "Cannot be determined"
+      },
+      "correctAnswer": "a",
+      "explanations": {
+        "a": "Correct. A₁A₀ = 10₂ = 2₁₀ and B₁B₀ = 01₂ = 1₁₀. Since 2 > 1, therefore A > B. Also comparing MSB first: A₁=1, B₁=0, so A > B immediately.",
+        "b": "Incorrect. A represents decimal 2 while B represents decimal 1, so A is greater than B, not less than B.",
+        "c": "Incorrect. The binary numbers 10 and 01 are different, so they cannot be equal.",
+        "d": "Incorrect. The comparison can be clearly determined by comparing the MSBs or converting to decimal."
+      },
+      "difficulty": "beginner"
+    },
+    {
+      "question": "2. For a 4-bit digital comparator comparing A₃A₂A₁A₀ and B₃B₂B₁B₀, which bit comparison has the highest priority in determining the final result:",
+      "answers": {
+        "a": "A₀ and B₀ (LSB)",
+        "b": "A₁ and B₁",
+        "c": "A₂ and B₂",
+        "d": "A₃ and B₃ (MSB)"
+      },
+      "correctAnswer": "d",
+      "explanations": {
+        "d": "Correct. The MSB (Most Significant Bit) comparison has the highest priority. If A₃ ≠ B₃, this determines the final result regardless of other bits.",
+        "a": "Incorrect. LSB has the lowest priority and is only considered if all higher-order bits are equal.",
+        "b": "Incorrect. This bit has lower priority than A₃B₃ comparison.",
+        "c": "Incorrect. This bit has lower priority than A₃B₃ comparison."
+      },
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "3. Number of outputs in a digital magnitude comparator circuit is:",
+      "answers": {
+        "a": "1",
+        "b": "2",
+        "c": "3",
+        "d": "4"
+      },
+      "correctAnswer": "c",
+      "explanations": {
+        "c": "Correct. A digital magnitude comparator has 3 outputs: one for A > B, one for A = B, and one for A < B condition.",
+        "a": "Incorrect. One output cannot represent all possible comparison results (greater, equal, less than).",
+        "b": "Incorrect. Two outputs are insufficient to distinguish between three possible comparison outcomes.",
+        "d": "Incorrect. Only 3 outputs are needed to represent the three possible comparison results."
+      },
+      "difficulty": "beginner"
+    },
+    {
+      "question": "4. In a 2-bit comparator circuit implementation, which logic equation correctly represents the A > B output:",
+      "answers": {
+        "a": "A₁B₁' + (A₁ ⊙ B₁) · A₀B₀'",
+        "b": "A₁'B₁ + (A₁ ⊙ B₁) · A₀'B₀",
+        "c": "(A₁ ⊙ B₁) · (A₀ ⊙ B₀)",
+        "d": "A₁B₁' + A₀B₀'"
+      },
+      "correctAnswer": "a",
+      "explanations": {
+        "a": "Correct. A > B when either A₁=1,B₁=0 (first term) OR when MSBs are equal and A₀=1,B₀=0 (second term).",
+        "b": "Incorrect. This represents the A < B condition, not A > B.",
+        "c": "Incorrect. This represents the A = B condition where corresponding bits are equal.",
+        "d": "Incorrect. This doesn't consider the hierarchical nature of bit comparison."
+      },
+      "difficulty": "advanced"
+    },
+    {
+      "question": "5. In a digital magnitude comparator, if two out of the three outputs are known to be 0, what can be inferred about the third output:",
+      "answers": {
+        "a": "The third output is always 0",
+        "b": "The third output is always 1",
+        "c": "The third output can be either 0 or 1",
+        "d": "Cannot be determined without input values"
+      },
+      "correctAnswer": "b",
+      "explanations": {
+        "b": "Correct. In a digital comparator, exactly one of the three outputs (A > B, A = B, A < B) must be 1 at any time, while the other two are 0. If two outputs are 0, the third must be 1.",
+        "a": "Incorrect. This would mean all three outputs are 0, which is impossible in a properly functioning comparator.",
+        "c": "Incorrect. The third output is deterministic based on the mutually exclusive nature of comparison results.",
+        "d": "Incorrect. The relationship between outputs is independent of specific input values - exactly one output is always active."
+      },
+      "difficulty": "intermediate"
+    }
+  ]
 }
