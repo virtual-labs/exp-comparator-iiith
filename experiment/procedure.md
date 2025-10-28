@@ -105,7 +105,7 @@ _Figure 3: 2-bit Comparator using Subtractor approach showing full adders with i
 #### Observations
 
 - The subtractor performs A₁A₀ - B₁B₀ using 2's complement arithmetic.
-- A = B output is high when the subtraction result S₁S₀ = 00 (zero result).
+- A = B output is high when the subtraction result S₁ S₀ = 00 (zero result).
 - A > B output is high when carry C₁ = 1 (no borrow occurred, positive result).
 - A < B output is high when carry C₁ = 0 (borrow occurred, negative result).
 - This method demonstrates the relationship between arithmetic and comparison operations.
