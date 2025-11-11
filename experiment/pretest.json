@@ -1,66 +1,90 @@
 {
-    "version": 2.0,
-    "questions": [
-        {
-            "question": "1. Compare the 2 binary numbers A = 11001 and B = 10101",
-            "answers": {
-                "a": "A > B",
-                "b": "A < B",
-                "c": "A = B",
-                "d": "Can't be determined"
-            },
-            "correctAnswer": "a",
-            "explanations": {},
-            "difficulty": "beginner"
-        },
-        {
-
-            "question": "2. During bitwise comparison of 2 binary numbers A = 1001010010 and B = 1011000110, with comparison of minimum number of bits, how many bits need to be compared to determine the comparison of two numbers:",
-            "answers": {
-                "a": "2",
-                "b": "3",
-                "c": "4",
-                "d": "5"
-            },
-            "correctAnswer": "b",
-            "explanations": {},
-            "difficulty": "advanced"
-        },
-        {
-            "question": "3. Which of the following expressions represents output for A>B:",
-            "answers": {
-                "a": "AB'",
-                "b": "A'B",
-                "c": "A'B' + AB",
-                "d": "A|B ^ A&B"
-            },
-            "correctAnswer": "a",
-            "explanations": {},
-            "difficulty": "intermediate"
-        },
-        {
-            "question": "4. Which of the following expressions represents output for A=B:",
-            "answers": {
-                "a": "AB'",
-                "b": "A'B",
-                "c": "A'B' + AB",
-                "d": "A|B ^ A&B"
-            },
-            "correctAnswer": "c",
-            "explanations": {},
-            "difficulty": "intermediate"
-        },
-        {
-            "question": "5. Which of the following are examples of comparators:",
-            "answers": {
-                "a": "CMOS 4063",
-                "b": "CMOS 4585",
-                "c": "TTL 7485",
-                "d": "All of these"
-            },
-            "correctAnswer": "d",
-            "explanations": {},
-            "difficulty": "beginner"
-        }
-    ]
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "1. Compare the 2 binary numbers A = 11001 and B = 10101:",
+      "answers": {
+        "a": "A > B",
+        "b": "A < B",
+        "c": "A = B",
+        "d": "Can't be determined"
+      },
+      "correctAnswer": "a",
+      "explanations": {
+        "a": "Correct. A = 11001₂ = 25₁₀ and B = 10101₂ = 21₁₀. Since 25 > 21, therefore A > B. We can also compare bit by bit: starting from MSB, both have 1, but at the second bit position A has 1 while B has 0, making A greater.",
+        "b": "Incorrect. A = 25₁₀ and B = 21₁₀, so A is greater than B, not less than B.",
+        "c": "Incorrect. The binary numbers are different, so they cannot be equal.",
+        "d": "Incorrect. The comparison can be determined by converting to decimal or comparing bit by bit from MSB."
+      },
+      "difficulty": "beginner"
+    },
+    {
+      "question": "2. During bitwise comparison of 2 binary numbers A = 1001010010 and B = 1011000110, with comparison of minimum number of bits, how many bits need to be compared to determine the comparison of two numbers:",
+      "answers": {
+        "a": "2",
+        "b": "3",
+        "c": "4",
+        "d": "5"
+      },
+      "correctAnswer": "b",
+      "explanations": {
+        "a": "Incorrect. The comparison requires 3 bits to be checked, not 2.",
+        "b": "Correct. Comparing from MSB: Bit 9: A=1, B=1 (equal, continue). Bit 8: A=0, B=0 (equal, continue). Bit 7: A=0, B=1 (B>A, comparison complete). Only 3 bits need to be compared to determine that B > A.",
+        "c": "Incorrect. The first inequality is found at the 3rd bit comparison, so 4 bits is more than necessary.",
+        "d": "Incorrect. The comparison can be determined much earlier than the 5th bit."
+      },
+      "difficulty": "advanced"
+    },
+    {
+      "question": "3. For a 1-bit comparator, which of the following expressions represents the output for A > B:",
+      "answers": {
+        "a": "A·B̄",
+        "b": "Ā·B",
+        "c": "Ā·B̄ + A·B",
+        "d": "A⊕B"
+      },
+      "correctAnswer": "a",
+      "explanations": {
+        "a": "Correct. For A > B in a 1-bit comparator, A must be 1 and B must be 0. This condition is represented by A·B̄ (A AND NOT B).",
+        "b": "Incorrect. Ā·B represents A < B condition, where A is 0 and B is 1.",
+        "c": "Incorrect. Ā·B̄ + A·B represents A = B condition (XNOR operation), where both bits are the same.",
+        "d": "Incorrect. A⊕B (XOR) represents A ≠ B condition, which is true for both A > B and A < B cases."
+      },
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "4. For a 1-bit comparator, which of the following expressions represents the output for A = B:",
+      "answers": {
+        "a": "A·B̄",
+        "b": "Ā·B",
+        "c": "Ā·B̄ + A·B",
+        "d": "A⊕B"
+      },
+      "correctAnswer": "c",
+      "explanations": {
+        "c": "Correct. For A = B, both inputs must be the same: either both 0 (Ā·B̄) or both 1 (A·B). This is represented by Ā·B̄ + A·B, which is the XNOR operation.",
+        "a": "Incorrect. A·B̄ represents A > B condition, where A is 1 and B is 0.",
+        "b": "Incorrect. Ā·B represents A < B condition, where A is 0 and B is 1.",
+        "d": "Incorrect. A⊕B (XOR) represents A ≠ B condition, which is true when inputs are different."
+      },
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "5. A digital comparator is primarily based on which type of digital logic:",
+      "answers": {
+        "a": "Combinational logic",
+        "b": "Sequential logic",
+        "c": "Memory circuits",
+        "d": "Arithmetic circuits only"
+      },
+      "correctAnswer": "a",
+      "explanations": {
+        "a": "Correct. A digital comparator is based on combinational logic, which means its outputs depend only on the current input values and not on any previous inputs or internal state.",
+        "b": "Incorrect. Sequential logic depends on previous states and clock signals, which is not the basis of comparator operation.",
+        "c": "Incorrect. Memory circuits store data, while comparators process and compare data using logic gates.",
+        "d": "Incorrect. While comparators perform comparison operations, they use general combinational logic principles, not just arithmetic circuits."
+      },
+      "difficulty": "beginner"
+    }
+  ]
 }

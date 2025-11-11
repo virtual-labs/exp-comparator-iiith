@@ -1,5 +1,6 @@
-import { simulate, deleteElement } from "./gate.js";
-import { connectGate, unbindEvent, initComparator, refreshWorkingArea } from "./main.js";
+import { simulate} from "./gate.js";
+import { connectGate, unbindEvent, initComparator, initComparator1, refreshWorkingArea, connectFA } from "./main.js";
+import { simulateAS} from "./fa.js";
 
 "use strict";
 // Wires Colours
@@ -18,34 +19,6 @@ export const wireColours = [
   "#c0c0c0",
 ];
 
-// Contextmenu
-const menu = document.querySelector(".menu");
-const menuOption = document.querySelector(".menu-option");
-
-export const setPosition = ({ top, left }) => {
-  menu.style.left = `${left}px`;
-  menu.style.top = `${top}px`;
-  menu.style.display = "block";
-};
-
-window.addEventListener("click", e => {
-  if (menu.style.display != "none")
-  {
-    menu.style.display = "none";
-  }
-  window.selectedComponent = null;
-  window.componentType = null;
-});
-
-menuOption.addEventListener("click", e => {
-  if (e.target.innerHTML === "Delete") {
-    if (window.componentType === "gate") {
-      deleteElement(window.selectedComponent);
-    }
-  }
-  window.selectedComponent = null;
-  window.componentType = null;
-});
 
 // Tabs
 
@@ -61,7 +34,6 @@ function changeTabs(e) {
   window.currentTab = task;
   document.getElementById(task).classList.add("is-active");
 
-  // Half adder
   if (task === "task1") {
     unbindEvent();
     connectGate();
@@ -69,10 +41,16 @@ function changeTabs(e) {
     initComparator();
     window.simulate = simulate
   }
+  else if(task==="task2") {
+    unbindEvent();
+    connectFA();
+    refreshWorkingArea();
+    initComparator1();
+    window.simulate = simulateAS;
+  }
   updateToolbar();
   clearObservations();
   resize();
-
 }
 
 window.changeTabs = changeTabs;
@@ -81,7 +59,11 @@ window.changeTabs = changeTabs;
 function updateToolbar() {
   let elem = "";
   if (window.currentTab === "task1") {
-    elem = '<div class="component-button and" onclick="addGate(event)">AND</div><div class="component-button or" onclick="addGate(event)">OR</div><div class="component-button not" onclick="addGate(event)">NOT</div><div class="component-button nand" onclick="addGate(event)">NAND</div><div class="component-button nor" onclick="addGate(event)">NOR</div><div class="component-button xor" onclick="addGate(event)">XOR</div><div class="component-button xnor" onclick="addGate(event)">XNOR</div>'
+    elem = '<div class="component-button and" onclick="addGate(event)">AND</div><div class="component-button or" onclick="addGate(event)">OR</div><div class="component-button not" onclick="addGate(event)">NOT</div><div class="component-button nand" onclick="addGate(event)">NAND</div><div class="component-button nor" onclick="addGate(event)">NOR</div><div class="component-button xor" onclick="addGate(event)">XOR</div><div class="component-button xnor" onclick="addGate(event)">XNOR</div><div class="component-button threeipnand" onclick="addGate(event)">NAND-3</div>'
+  }
+  else if (window.currentTab === "task2") {
+    elem =
+      '<div class="component-button and" onclick="addGate(event)">AND</div><div class="component-button or" onclick="addGate(event)">OR</div><div class="component-button not" onclick="addGate(event)">NOT</div><div class="component-button nand" onclick="addGate(event)">NAND</div><div class="component-button nor" onclick="addGate(event)">NOR</div><div class="component-button xor" onclick="addGate(event)">XOR</div><div class="component-button xnor" onclick="addGate(event)">XNOR</div><div class="component-button threeipnand" onclick="addGate(event)">NAND-3</div><div class="component-button fulladder" onclick="addFA(event)"></div>';
   }
   document.getElementById("toolbar").innerHTML = elem;
 }
@@ -121,4 +103,15 @@ function resize() {
   }
 }
 
+const updateInstructions = () => {
+  const task = window.currentTab;
+  const instructionBox = document.getElementById("instruction-title");
+  let title = ""; 
+  if (task === "task1") {
+    title = `Instructions<br>Implement a 2-bit Comparator using logic gates`;
+  } else if (task === "task2") {
+    title = `Instructions<br>Implement a 2-bit comparator using subtractors built using full adders`;
+  }
+  instructionBox.innerHTML = title;
+}
 resize();
