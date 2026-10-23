@@ -8,8 +8,9 @@
   z-index: 4;
   stroke-width: 7;
 }
+/* endpoints stay above wires so that more wires can be drawn from an endpoint */
 .jtk-endpoint {
-  z-index: 5;
+  z-index: 12;
 }
 .jtk-overlay {
   z-index: 6;
@@ -89,7 +90,7 @@ text {
   height: 25px;
   border-radius: 50%;
   border: 0.2rem solid rgb(98, 178, 235);
-  z-index: 1;
+  z-index: 7; /* above wires and components, so that the bit can always be clicked */
   background-color: #29e;
   background-repeat: no-repeat;
   background-position: center;
@@ -169,7 +170,7 @@ text {
   height: 25px;
   border-radius: 50%;
   border: 0.2rem solid rgb(236, 234, 90);
-  z-index: 1;
+  z-index: 7; /* above wires and components, so that the bit can always be clicked */
   background-color: rgb(238, 235, 34);
   background-repeat: no-repeat;
   background-position: center;
@@ -208,7 +209,7 @@ text {
   height: 25px;
   border-radius: 50%;
   border: 0.2rem solid rgb(20, 21, 22);
-  z-index: 1;
+  z-index: 7; /* above wires and components, so that the bit can always be clicked */
   background-color: rgb(4, 5, 5);
   background-repeat: no-repeat;
   background-position: center;
@@ -422,4 +423,17 @@ svg.wire path {
 
 .bold-table {
   font-weight: bold;
+}
+
+/* keep every column of the truth table visible inside the observations panel */
+.v-table-wrap {
+  overflow-x: auto;
+}
+
+.v-table-wrap .table th,
+.v-table-wrap .table td {
+  padding: 0.25em 0.35em;
+  font-size: 0.85rem;
+  text-align: center;
+  vertical-align: middle;
 }

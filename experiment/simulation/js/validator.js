@@ -105,6 +105,8 @@ export function testComparator1(inputA,inputB, inputC, inputD, outputA, outputB,
     let inputA1 = gates_list[inputB]; // A1
     let inputB0 = gates_list[inputC]; // B0
     let inputB1 = gates_list[inputD]; // B1
+    // the Cin input bit is the constant 1 needed for the 2's complement, so it is fixed to 1 during the test
+    const carryInBit = gates_list["Input-7"];
     let cicuitIsCorrect = true;
     let head = '';
     head = '<tr><th colspan="2">Input</th><th colspan="3">Result</th></tr><tr><th>A1&nbsp;A0</th><th>B1&nbsp;B0</th><th>A&lt;B</th><th>A=B</th><th>A&gt;B</th></tr>'
@@ -123,6 +125,7 @@ export function testComparator1(inputA,inputB, inputC, inputD, outputA, outputB,
         inputB0.setOutput(binary[0] === "1");
         inputA1.setOutput(binary[3] === "1");
         inputA0.setOutput(binary[2] === "1");
+        carryInBit.setOutput(true);
         const A0 = binary[2] === "1";
         const A1 = binary[3] === "1";
         const B0 = binary[0] === "1";
@@ -152,7 +155,6 @@ export function testComparator1(inputA,inputB, inputC, inputD, outputA, outputB,
         const AltB = carryC2 ? 0 : 1;
         const AgtB = ((sumS0 || sumS1) && carryC2) ? 1 : 0;
         const AeqB = (!sumS1 && !sumS0 && carryC2) ? 1 : 0;
-        console.log(AltB,AeqB,AgtB)
 
         // simulate the circuit
         if(!testSimulationAS(fA, gates_list)){
