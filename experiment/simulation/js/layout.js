@@ -49,6 +49,7 @@ function changeTabs(e) {
     window.simulate = simulateAS;
   }
   updateToolbar();
+  updateInstructions();
   clearObservations();
   resize();
 }
@@ -110,7 +111,7 @@ const updateInstructions = () => {
   if (task === "task1") {
     title = `Instructions<br>Implement a 2-bit Comparator using logic gates`;
   } else if (task === "task2") {
-    title = `Instructions<br>Implement a 2-bit comparator using subtractors built using full adders`;
+    title = `Instructions<br>Implement a 2-bit comparator using a subtractor built with full adders. The input bit Cin is the constant logic 1 needed by the subtractor`;
   }
   instructionBox.innerHTML = title;
 }

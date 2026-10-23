@@ -28,6 +28,7 @@
                             <a>
                                 2-bit Comparator
                             </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -38,12 +39,15 @@
                     <div class="v-collapsible is-size-5">Instructions</div>
                     <div class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%;">
                         <ul style="list-style: disc;">
-                            <li><b>Start</b>- Starts the simulation after the inputs are properly selected. Default
-                                speed is 1x.</li>
-                            <li>Select the speed through dropdown menu</li>
-                            <li>The default speed is reset to x1 automatically at the beginning of every simulation or whenever you pause and resume. If you want to change the speed, you can do so only while the simulation is running (only after starting or after resuming the simulation).</li>
-                            <li><b>Reset</b> - Resets the simulation</li>
-                            <li>Click on the green input bits to set their values.</li>
+                            <li>The input bits A1, A0 (the number A) and B1, B0 (the number B) start at 0. Click on an
+                                input bit to toggle its value between 0 and 1.</li>
+                            <li><b>Start</b> - Starts the simulation for the selected inputs. While it runs, the same
+                                button pauses and resumes it.</li>
+                            <li>Select the speed (1x, 2x or 4x) from the dropdown menu, before or during the simulation.</li>
+                            <li>The three outputs show whether A = B, A &gt; B or A &lt; B. Exactly one of them is 1.</li>
+                            <li>When the simulation finishes, the outputs are shown. Change the inputs and click on
+                                <b>Start</b> again to try another combination.</li>
+                            <li><b>Reset</b> - Resets the simulation and sets all the inputs back to 0.</li>
                         </ul>
                     </div>
                 </div>
@@ -174,8 +178,8 @@
                         <text class="text-demo" x="10" y="260" >B0</text>
                         <text class="text-demo" x="10" y="360" >A0</text>
                         <text class="text-demo" x="932" y="178" >A = B</text>
-                        <text class="text-demo" x="932" y="405.5" >A > B</text>
-                        <text class="text-demo" x="932" y="633" >B > A</text>
+                        <text class="text-demo" x="932" y="405.5" >A &gt; B</text>
+                        <text class="text-demo" x="932" y="633" >A &lt; B</text>
                         <text class="text-demo" x="755" y="400" >NOR</text>
                         <text class="text-demo" x="510" y="180" >AND</text>
                         <text class="text-demo" x="272" y="80" >XNOR</text>
@@ -183,7 +187,7 @@
                         <text class="text-demo" x="275" y="560" >NAND</text>
                         <text class="text-demo" x="275" y="630" >NAND</text>
                         <text class="text-demo" x="515" y="630" >NAND</text>
-                        <text class="text-demo" x="275" y="700" >NAND</text>\
+                        <text class="text-demo" x="275" y="700" >NAND</text>
                     </svg>
                 </div>
             </div>

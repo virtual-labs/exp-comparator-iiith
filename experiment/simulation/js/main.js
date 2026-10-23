@@ -63,6 +63,135 @@ export const jsPlumbInstance = jsPlumbBrowserUI.newInstance({
   connectionsDetachable: false,
 });
 
+// Returns the component (gate, input/output bit or full adder) with the given id
+function findComponent(id) {
+  return gatejs.gates[id] || fajs.fullAdder[id] || null;
+}
+
+// Returns the id of the label overlay of an endpoint (the pin name); it is empty for gates and input/output bits
+function pinLabel(endpoint) {
+  const keys = Object.keys(endpoint.overlays || {});
+  return keys.length > 0 ? keys[0] : "";
+}
+
+// Tells which output of a component a wire starts from: "Sum" or "Carry" for a full adder, "" for everything else
+function outputPos(component, endpoint) {
+  if (component instanceof fajs.FullAdder) {
+    return pinLabel(endpoint).includes("sum") ? "Sum" : "Carry";
+  }
+  return "";
+}
+
+// Returns the output endpoint and the input endpoint of a wire, whichever way it was drawn
+function splitEndpoints(epA, epB) {
+  return epA.uuid.startsWith("output") ? [epA, epB] : [epB, epA];
+}
+
+// Records a new wire in the circuit model. It works the same for gates, input/output bits and full adders, and for both
+// directions in which a wire can be dragged (from an output point to an input point or the other way round).
+function linkEndpoints(fromEndpoint, toEndpoint) {
+  const [outEp, inEp] = splitEndpoints(fromEndpoint, toEndpoint);
+  const driver = findComponent(outEp.elementId);
+  const sink = findComponent(inEp.elementId);
+  if (!driver || !sink) {
+    return;
+  }
+  const pos = outputPos(driver, outEp);
+
+  // the component that drives the wire
+  if (driver instanceof fajs.FullAdder) {
+    if (pos === "Sum") {
+      driver.addSum(sink);
+    } else {
+      driver.addCout(sink);
+    }
+    driver.setConnected(true, pos);
+  } else {
+    driver.addOutput(sink);
+    driver.setConnected(true);
+  }
+
+  // the component that receives the wire
+  if (sink instanceof fajs.FullAdder) {
+    const pin = pinLabel(inEp);
+    if (pin.includes("a0")) {
+      sink.setA0([driver, pos]);
+    } else if (pin.includes("b0")) {
+      sink.setB0([driver, pos]);
+    } else if (pin.includes("cin")) {
+      sink.setCin([driver, pos]);
+    }
+  } else {
+    sink.addInput(driver, pos);
+    if (sink.isOutput) {
+      fajs.finalOutputs[sink.id] = [driver, pos];
+    }
+  }
+}
+
+// Removes a single occurrence of item from list
+function removeOne(list, item) {
+  const index = list.indexOf(item);
+  if (index !== -1) {
+    list.splice(index, 1);
+  }
+}
+
+// Removes a deleted wire from the circuit model
+function unlinkEndpoints(connection, epA, epB) {
+  if (!epA || !epB || !epA.uuid || !epB.uuid) {
+    return;
+  }
+  const [outEp, inEp] = splitEndpoints(epA, epB);
+  if (!outEp.uuid.startsWith("output") || !inEp.uuid.startsWith("input")) {
+    return;
+  }
+  const driver = findComponent(outEp.elementId);
+  const sink = findComponent(inEp.elementId);
+  if (!driver || !sink) {
+    return;
+  }
+  const pos = outputPos(driver, outEp);
+  // the driver stays connected only if it has another wire
+  const lastWire = outEp.connections.filter((c) => c !== connection).length === 0;
+
+  if (driver instanceof fajs.FullAdder) {
+    removeOne(pos === "Sum" ? driver.outSum : driver.outCout, sink);
+  } else {
+    removeOne(driver.outputs, sink);
+  }
+  if (lastWire) {
+    driver.setConnected(false, pos);
+  }
+
+  if (sink instanceof fajs.FullAdder) {
+    const pin = pinLabel(inEp);
+    if (pin.includes("a0")) {
+      sink.setA0([]);
+    } else if (pin.includes("b0")) {
+      sink.setB0([]);
+    } else if (pin.includes("cin")) {
+      sink.setCin([]);
+    }
+  } else {
+    const index = sink.inputs.findIndex(
+      (source, i) => source === driver && sink.input_pos[i] === pos
+    );
+    if (index !== -1) {
+      sink.inputs.splice(index, 1);
+      sink.input_pos.splice(index, 1);
+    }
+    if (sink.isOutput) {
+      fajs.finalOutputs[sink.id] = [];
+    }
+  }
+}
+
+// Keep the circuit model in sync when a wire is deleted
+jsPlumbInstance.bind("connection:detach", function (info) {
+  unlinkEndpoints(info.connection, info.sourceEndpoint, info.targetEndpoint);
+});
+
 // This is an event listener for establishing connections between gates
 export const connectGate = function () {
   jsPlumbInstance.bind("beforeDrop", function (data) {
@@ -94,17 +223,7 @@ export const connectGate = function () {
       });
       num_wires++;
       num_wires = num_wires % wireColours.length;
-      if (start_uuid === "output") {
-        let input = gatejs.gates[fromEndpoint.elementId];
-        input.isConnected = true;
-        gatejs.gates[toEndpoint.elementId].addInput(input, "");
-        input.addOutput(gatejs.gates[toEndpoint.elementId]);
-      } else if (end_uuid === "output") {
-        let input = gatejs.gates[toEndpoint.elementId];
-        input.isConnected = true;
-        gatejs.gates[fromEndpoint.elementId].addInput(input, "");
-        input.addOutput(gatejs.gates[fromEndpoint.elementId]);
-      }
+      linkEndpoints(fromEndpoint, toEndpoint);
     }
   });
 };
@@ -139,227 +258,7 @@ export const connectFA = function () {
       });
       num_wires++;
       num_wires = num_wires % wireColours.length;
-      const start_type = fromEndpoint.elementId.split("-")[0];
-      const end_type = toEndpoint.elementId.split("-")[0];
-      console.log(start_type, end_type);
-      if (start_type === "FullAdder" && end_type === "FullAdder") {
-        if (start_uuid === "output") {
-          const input = fajs.fullAdder[fromEndpoint.elementId];
-          let pos = "";
-          if (Object.keys(fromEndpoint.overlays)[0].includes("sum")) {
-            pos = "Sum";
-            input.addSum(fajs.fullAdder[toEndpoint.elementId]);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("cout")) {
-            pos = "Carry";
-            input.addCout(fajs.fullAdder[toEndpoint.elementId]);
-          }
-          input.setConnected(true, pos);
-          if (Object.keys(toEndpoint.overlays)[0].includes("a")) {
-            fajs.fullAdder[toEndpoint.elementId].setA0([input, pos]);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("b")) {
-            fajs.fullAdder[toEndpoint.elementId].setB0([input, pos]);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("cin")) {
-            fajs.fullAdder[toEndpoint.elementId].setCin([input, pos]);
-          }
-        } else if (end_uuid === "output") {
-          const input = fajs.fullAdder[toEndpoint.elementId];
-          let pos = "";
-          if (Object.keys(toEndpoint.overlays)[0].includes("sum")) {
-            pos = "Sum";
-            input.addSum(fajs.fullAdder[fromEndpoint.elementId]);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("cout")) {
-            pos = "Carry";
-            input.addCout(fajs.fullAdder[fromEndpoint.elementId]);
-          }
-          input.setConnected(true, pos);
-          if (Object.keys(fromEndpoint.overlays)[0].includes("a")) {
-            fajs.fullAdder[fromEndpoint.elementId].setA0([input, pos]);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("b")) {
-            fajs.fullAdder[fromEndpoint.elementId].setB0([input, pos]);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("cin")) {
-            fajs.fullAdder[fromEndpoint.elementId].setCin([input, pos]);
-          }
-        }
-      } else if (start_type === "FullAdder" && end_type === "Input") {
-        if (end_uuid === "output") {
-          const input = gatejs.gates[toEndpoint.elementId];
-          input.setConnected(true);
-          let pos = "";
-          if (Object.keys(fromEndpoint.overlays)[0].includes("a")) {
-            fajs.fullAdder[fromEndpoint.elementId].setA0([input, pos]);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("b")) {
-            fajs.fullAdder[fromEndpoint.elementId].setB0([input, pos]);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("cin")) {
-            fajs.fullAdder[fromEndpoint.elementId].setCin([input, pos]);
-          }
-          input.addOutput(fajs.fullAdder[fromEndpoint.elementId]);
-        }
-      } else if (start_type === "Input" && end_type === "FullAdder") {
-        if (start_uuid === "output") {
-          const input = gatejs.gates[fromEndpoint.elementId];
-          input.setConnected(true);
-          let pos = "";
-          if (Object.keys(toEndpoint.overlays)[0].includes("a")) {
-            fajs.fullAdder[toEndpoint.elementId].setA0([input, pos]);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("b")) {
-            fajs.fullAdder[toEndpoint.elementId].setB0([input, pos]);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("cin")) {
-            fajs.fullAdder[toEndpoint.elementId].setCin([input, pos]);
-          }
-          input.addOutput(fajs.fullAdder[toEndpoint.elementId]);
-        }
-      } else if (start_type === "FullAdder" && end_type === "Output") {
-        if (start_uuid === "output") {
-          const input = fajs.fullAdder[fromEndpoint.elementId];
-          const output = gatejs.gates[toEndpoint.elementId];
-          let pos = "";
-          if (Object.keys(fromEndpoint.overlays)[0].includes("sum")) {
-            pos = "Sum";
-            input.addSum(output);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("cout")) {
-            pos = "Carry";
-            input.addCout(output);
-          }
-          input.setConnected(true, pos);
-          output.addInput(input, pos);
-          fajs.finalOutputs[toEndpoint.elementId] = [input, pos];
-        }
-      } else if (start_type === "Output" && end_type === "FullAdder") {
-        if (start_uuid === "input") {
-          const input = fajs.fullAdder[toEndpoint.elementId];
-          const output = gatejs.gates[fromEndpoint.elementId];
-          let pos = "";
-          if (Object.keys(toEndpoint.overlays)[0].includes("sum")) {
-            pos = "Sum";
-            input.addSum(output);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("carry")) {
-            pos = "Carry";
-            input.addCout(output);
-          }
-          input.setConnected(true, pos);
-          output.addInput(input, pos);
-          fajs.finalOutputs[fromEndpoint.elementId] = [input, pos];
-        }
-      } else if (
-        start_type === "FullAdder" &&
-        end_type !== "FullAdder" &&
-        end_type !== "Input" &&
-        end_type !== "Output"
-      ) {
-        if (end_uuid === "output") {
-          const input = gatejs.gates[toEndpoint.elementId];
-          input.setConnected(true);
-          let pos = "";
-          if (Object.keys(fromEndpoint.overlays)[0].includes("a")) {
-            fajs.fullAdder[fromEndpoint.elementId].setA0([input, pos]);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("b")) {
-            fajs.fullAdder[fromEndpoint.elementId].setB0([input, pos]);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("cin")) {
-            fajs.fullAdder[fromEndpoint.elementId].setCin([input, pos]);
-          }
-          input.addOutput(fajs.fullAdder[fromEndpoint.elementId]);
-        } else if (start_uuid === "output") {
-          const input = fajs.fullAdder[fromEndpoint.elementId];
-          const output = gatejs.gates[toEndpoint.elementId];
-          let pos = "";
-          if (Object.keys(fromEndpoint.overlays)[0].includes("sum")) {
-            pos = "Sum";
-            input.addSum(output);
-          } else if (Object.keys(fromEndpoint.overlays)[0].includes("cout")) {
-            pos = "Carry";
-            input.addCout(output);
-          }
-          input.setConnected(true, pos);
-          console.log(output.inputs.length);
-          output.addInput(input, pos);
-          console.log(output.inputs.length);
-        }
-      } else if (
-        start_type !== "FullAdder" &&
-        start_type !== "Input" &&
-        start_type !== "Output" &&
-        end_type === "FullAdder"
-      ) {
-        if (start_uuid === "output") {
-          const input = gatejs.gates[fromEndpoint.elementId];
-          input.setConnected(true);
-          let pos = "";
-          if (Object.keys(toEndpoint.overlays)[0].includes("a")) {
-            fajs.fullAdder[toEndpoint.elementId].setA0([input, pos]);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("b")) {
-            fajs.fullAdder[toEndpoint.elementId].setB0([input, pos]);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("cin")) {
-            fajs.fullAdder[toEndpoint.elementId].setCin([input, pos]);
-          }
-          input.addOutput(fajs.fullAdder[toEndpoint.elementId]);
-        } else if (start_uuid === "input") {
-          const input = fajs.fullAdder[toEndpoint.elementId];
-          const output = gatejs.gates[fromEndpoint.elementId];
-          let pos = "";
-          if (Object.keys(toEndpoint.overlays)[0].includes("sum")) {
-            pos = "Sum";
-            input.addSum(output);
-          } else if (Object.keys(toEndpoint.overlays)[0].includes("carry")) {
-            pos = "Carry";
-            input.addCout(output);
-          }
-          input.setConnected(true, pos);
-          output.addInput(input, pos);
-        }
-      } else if (
-        start_type !== "FullAdder" &&
-        start_type !== "Output" &&
-        end_type === "Output"
-      ) {
-        if (start_uuid === "output") {
-          const input = gatejs.gates[fromEndpoint.elementId];
-          const output = gatejs.gates[toEndpoint.elementId];
-          input.setConnected(true);
-          output.addInput(input, "");
-          fajs.finalOutputs[toEndpoint.elementId] = [input, ""];
-          input.addOutput(output);
-        }
-      } else if (
-        start_type === "Output" &&
-        end_type !== "Output" &&
-        end_type !== "FullAdder"
-      ) {
-        if (start_uuid === "input") {
-          const input = gatejs.gates[toEndpoint.elementId];
-          const output = gatejs.gates[fromEndpoint.elementId];
-          input.setConnected(true);
-          output.addInput(input, "");
-          fajs.finalOutputs[fromEndpoint.elementId] = [input, ""];
-          input.addOutput(output);
-        }
-      } else {
-        if (start_uuid === "output") {
-          let input = gatejs.gates[fromEndpoint.elementId];
-          input.isConnected = true;
-          gatejs.gates[toEndpoint.elementId].addInput(input, "");
-          input.addOutput(gatejs.gates[toEndpoint.elementId]);
-        } else if (end_uuid === "output") {
-          let input = gatejs.gates[toEndpoint.elementId];
-          input.isConnected = true;
-          gatejs.gates[fromEndpoint.elementId].addInput(input, "");
-          input.addOutput(gatejs.gates[fromEndpoint.elementId]);
-        }
-        if (end_type === "Output") {
-          const input = gatejs.gates[fromEndpoint.elementId];
-          fajs.finalOutputs[toEndpoint.elementId] = [input, ""];
-          // input.isConnected = true;
-          // gatejs.gates[toEndpoint.elementId].addInput(input);
-          // input.addOutput(gatejs.gates[toEndpoint.elementId]);
-        }
-        if (start_type === "Output") {
-          const input = gatejs.gates[toEndpoint.elementId];
-          fajs.finalOutputs[fromEndpoint.elementId] = [input, ""];
-          // input.isConnected = true;
-          // gatejs.gates[fromEndpoint.elementId].addInput(input);
-          // input.addOutput(gatejs.gates[fromEndpoint.elementId]);
-        }
-      }
-      // return true;
+      linkEndpoints(fromEndpoint, toEndpoint);
     }
   });
 };
@@ -732,159 +631,28 @@ menuOption.addEventListener("click", (e) => {
       console.log("Deleting full adder component");
       deleteFA(window.selectedComponent);
     } else {
-      console.log("Deleting wire connections");
+      // Find the connection that belongs to the right-clicked wire (or to the wire under the mouse) and delete it
+      const findConnection = (connectorElement) =>
+        jsPlumbInstance
+          .getConnections()
+          .find((c) => c.connector && c.connector.canvas === connectorElement);
 
-      let connectionDeleted = false;
-
-      // Try to delete connection that was right-clicked
+      let connection = null;
       if (window.isConnectionContext && window.contextMenuTarget) {
-        const connectorElement =
-          window.contextMenuTarget.closest(".jtk-connector");
+        const connectorElement = window.contextMenuTarget.closest(".jtk-connector");
         if (connectorElement) {
-          try {
-            // Find the connection by DOM element and delete it safely
-            const allConnections = jsPlumbInstance.getAllConnections();
-            for (let elementId in allConnections) {
-              const elementConnections = allConnections[elementId];
-              for (let i = 0; i < elementConnections.length; i++) {
-                const connection = elementConnections[i];
-                if (
-                  connection.connector &&
-                  connection.connector.canvas === connectorElement
-                ) {
-                  console.log("Found matching connection, deleting...");
-                  if (safeDeleteConnection(connection)) {
-                    connectionDeleted = true;
-                    break;
-                  }
-                }
-              }
-              if (connectionDeleted) break;
-            }
-
-            // Alternative method: Use select() if getAllConnections didn't work
-            if (!connectionDeleted && jsPlumbInstance.select) {
-              const allConnections = jsPlumbInstance.select();
-              if (allConnections.entries && allConnections.entries.length > 0) {
-                for (let i = 0; i < allConnections.entries.length; i++) {
-                  const connection = allConnections.entries[i];
-                  if (
-                    connection.connector &&
-                    connection.connector.canvas === connectorElement
-                  ) {
-                    if (safeDeleteConnection(connection)) {
-                      connectionDeleted = true;
-                      found = true;
-                      break;
-                    }
-                  }
-                }
-              }
-            }
-
-            // Final fallback: Direct DOM removal
-            if (!connectionDeleted && connectorElement.parentNode) {
-              connectorElement.parentNode.removeChild(connectorElement);
-              connectionDeleted = true;
-            }
-          } catch (error) {
-            console.log("Error deleting specific connection:", error);
-            // Last resort: try DOM removal
-            try {
-              if (connectorElement && connectorElement.parentNode) {
-                connectorElement.parentNode.removeChild(connectorElement);
-                connectionDeleted = true;
-              }
-            } catch (domError) {
-              console.log("DOM removal also failed:", domError);
-            }
-          }
+          connection = findConnection(connectorElement);
         }
       }
-
-      // Fallback: delete hovered connections
-      if (!connectionDeleted) {
-        const elementsToDelete = document.querySelectorAll(
-          ".jtk-connector.jtk-hover"
-        );
-        console.log("Elements found for deletion:", elementsToDelete);
-
-        if (elementsToDelete.length > 0) {
-          elementsToDelete.forEach(function (connectorElement) {
-            if (connectionDeleted) return; // Skip if we already deleted a connection
-
-            try {
-              // Try to find and delete the connection through JSPlumb
-              const allConnections = jsPlumbInstance.getAllConnections();
-              let found = false;
-
-              for (let elementId in allConnections) {
-                if (found) break;
-                const elementConnections = allConnections[elementId];
-                for (let i = 0; i < elementConnections.length; i++) {
-                  const connection = elementConnections[i];
-                  if (
-                    connection.connector &&
-                    connection.connector.canvas === connectorElement
-                  ) {
-                    if (safeDeleteConnection(connection)) {
-                      connectionDeleted = true;
-                      found = true;
-                      break;
-                    }
-                  }
-                }
-              }
-
-              // Alternative method if getAllConnections didn't work
-              if (!found && jsPlumbInstance.select) {
-                const allConnections = jsPlumbInstance.select();
-                if (
-                  allConnections.entries &&
-                  allConnections.entries.length > 0
-                ) {
-                  for (let i = 0; i < allConnections.entries.length; i++) {
-                    const connection = allConnections.entries[i];
-                    if (
-                      connection.connector &&
-                      connection.connector.canvas === connectorElement
-                    ) {
-                      if (safeDeleteConnection(connection)) {
-                        connectionDeleted = true;
-                        found = true;
-                        break;
-                      }
-                    }
-                  }
-                }
-              }
-
-              // Final fallback: Direct DOM removal
-              if (!found && connectorElement.parentNode) {
-                connectorElement.parentNode.removeChild(connectorElement);
-                connectionDeleted = true;
-              }
-            } catch (error) {
-              console.log("Error deleting hovered connection:", error);
-              // Last resort DOM removal
-              try {
-                if (connectorElement && connectorElement.parentNode) {
-                  connectorElement.parentNode.removeChild(connectorElement);
-                  connectionDeleted = true;
-                }
-              } catch (domError) {
-                console.log(
-                  "DOM removal also failed for hovered connection:",
-                  domError
-                );
-              }
-            }
-          });
+      if (!connection) {
+        // fall back to the wire that is highlighted because the mouse is over it
+        const hovered = document.querySelectorAll(".jtk-connector.jtk-hover");
+        for (let i = 0; i < hovered.length && !connection; i++) {
+          connection = findConnection(hovered[i]);
         }
-
-        if (!connectionDeleted) {
-          console.log("No connections found to delete");
-        }
+      }
+      if (connection) {
+        safeDeleteConnection(connection);
       }
     }
   }

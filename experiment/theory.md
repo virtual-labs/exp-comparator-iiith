@@ -18,6 +18,8 @@ The outputs can be expressed as logical functions of input variables A and B as 
 
 **A < B = A' · B** (A is 0 and B is 1)
 
+The figure above builds the A = B output in a slightly different way: it takes the NOR of the other two outputs, A = B = (A'B + AB')', which is the same function as A'B' + AB because exactly one of the three outputs is high.
+
 #### Key Features
 
 - Simple design using basic logic gates (AND, OR, NOT)
@@ -72,6 +74,13 @@ A 2-bit comparator compares two 2-bit binary numbers A₁A₀ and B₁B₀ and d
 - MSBs are equal AND A₀ < B₀
 - **(A < B) = A₁'B₁ + (A₁ ⊙ B₁) · A₀'B₀**
 
+The figure above shows the same comparator in sum-of-products form, which uses gates with three inputs:
+
+- **(A > B) = A₁B₁' + A₁A₀B₀' + A₀B₁'B₀'**
+- **(A < B) = A₁'B₁ + A₁'A₀'B₀ + A₀'B₁B₀**
+
+It gives the same truth table as the hierarchical equations above.
+
 #### Key Features
 
 - Compares two 2-bit binary numbers (A₁A₀ and B₁B₀)
@@ -110,7 +119,7 @@ A 2-bit comparator compares two 2-bit binary numbers A₁A₀ and B₁B₀ and d
 
 ### 2-bit Comparator Using Subtractor
 
-<img src="images/comparator_subtractor.png">
+<img src="images/comparator_subtractor.svg" alt="2-bit comparator using a subtractor built from two full adders">
 
 An alternative approach to implement a 2-bit comparator is to use a subtractor circuit. This method leverages the mathematical relationship between subtraction and comparison operations. When we subtract B from A (A - B), the result and associated flags can directly indicate the comparison relationship.
 
@@ -127,7 +136,6 @@ The subtractor-based comparator works on the principle that:
 A 2-bit subtractor performs the operation A₁A₀ - B₁B₀ using 2's complement arithmetic:
 
 1. **2's Complement of B**: First, find 2's complement of B₁B₀
-
    - 1's complement: B₁'B₀'
    - Add 1: B₁'B₀' + 1
 
@@ -142,13 +150,14 @@ The subtractor can be built using full adders with the following connections:
 **For A₁A₀ - B₁B₀:**
 
 - **Stage 0 (LSB)**:
-
   - Inputs: A₀, B₀' (inverted B₀), Cin = 1 (for 2's complement)
   - Outputs: S₀, C₀
 
 - **Stage 1 (MSB)**:
   - Inputs: A₁, B₁' (inverted B₁), Cin = C₀
   - Outputs: S₁, C₁
+
+The inversion of B is done with XOR gates: B' = B ⊕ 1. The constant logic 1 is also the carry input of stage 0. In the Practice task the input bit Cin provides this constant 1 and must be kept at 1.
 
 #### Comparison Logic from Subtractor Results
 
@@ -161,8 +170,9 @@ The comparison outputs can be derived from the subtractor results:
 
 **Greater Than (A > B)**:
 
-- A > B when there is no borrow (positive result)
-- **(A > B) = C₁** (Carry out indicates no borrow)
+- A > B when there is no borrow (C₁ = 1) and the result is not zero
+- **(A > B) = C₁ · (S₁ + S₀)**
+- Note that C₁ alone is not enough: C₁ = 1 whenever A ≥ B, so it is also 1 when A = B, where A > B must be 0.
 
 **Less Than (A < B)**:
 
@@ -173,22 +183,24 @@ The comparison outputs can be derived from the subtractor results:
 
 | A₁  | A₀  | B₁  | B₀  | A-B (Decimal) | S₁  | S₀  | C₁  | A>B | A=B | A<B |
 | --- | --- | --- | --- | ------------- | --- | --- | --- | --- | --- | --- |
-| 0   | 0   | 0   | 0   | 0             | 0   | 0   | 1   | 1   | 1   | 0   |
+| 0   | 0   | 0   | 0   | 0             | 0   | 0   | 1   | 0   | 1   | 0   |
 | 0   | 0   | 0   | 1   | -1            | 1   | 1   | 0   | 0   | 0   | 1   |
 | 0   | 0   | 1   | 0   | -2            | 1   | 0   | 0   | 0   | 0   | 1   |
 | 0   | 0   | 1   | 1   | -3            | 0   | 1   | 0   | 0   | 0   | 1   |
 | 0   | 1   | 0   | 0   | 1             | 0   | 1   | 1   | 1   | 0   | 0   |
-| 0   | 1   | 0   | 1   | 0             | 0   | 0   | 1   | 1   | 1   | 0   |
+| 0   | 1   | 0   | 1   | 0             | 0   | 0   | 1   | 0   | 1   | 0   |
 | 0   | 1   | 1   | 0   | -1            | 1   | 1   | 0   | 0   | 0   | 1   |
 | 0   | 1   | 1   | 1   | -2            | 1   | 0   | 0   | 0   | 0   | 1   |
 | 1   | 0   | 0   | 0   | 2             | 1   | 0   | 1   | 1   | 0   | 0   |
 | 1   | 0   | 0   | 1   | 1             | 0   | 1   | 1   | 1   | 0   | 0   |
-| 1   | 0   | 1   | 0   | 0             | 0   | 0   | 1   | 1   | 1   | 0   |
+| 1   | 0   | 1   | 0   | 0             | 0   | 0   | 1   | 0   | 1   | 0   |
 | 1   | 0   | 1   | 1   | -1            | 1   | 1   | 0   | 0   | 0   | 1   |
 | 1   | 1   | 0   | 0   | 3             | 1   | 1   | 1   | 1   | 0   | 0   |
 | 1   | 1   | 0   | 1   | 2             | 1   | 0   | 1   | 1   | 0   | 0   |
 | 1   | 1   | 1   | 0   | 1             | 0   | 1   | 1   | 1   | 0   | 0   |
-| 1   | 1   | 1   | 1   | 0             | 0   | 0   | 1   | 1   | 1   | 0   |
+| 1   | 1   | 1   | 1   | 0             | 0   | 0   | 1   | 0   | 1   | 0   |
+
+C₁ = 1 for all the rows with A ≥ B. A > B is 1 only when C₁ = 1 and the result S₁S₀ is not 00. In the four rows with A = B, the result is zero, so A = B = 1 and A > B = 0.
 
 #### Advantages of Subtractor-Based Comparison
 
@@ -208,8 +220,9 @@ The comparison outputs can be derived from the subtractor results:
 From the subtractor results, the final comparison outputs are generated:
 
 ```
+
 A = B = S₁' · S₀'           (Result is zero)
-A > B = C₁                  (No borrow occurred)
+A > B = C₁ · (S₁ + S₀)      (No borrow occurred and the result is not zero)
 A < B = C₁'                 (Borrow occurred)
 ```
 
