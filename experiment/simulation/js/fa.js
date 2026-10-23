@@ -1,6 +1,6 @@
 import { registerGate, jsPlumbInstance } from "./main.js";
 import { setPosition } from "./main.js";
-import { checkConnections, clearResult, gates, printErrors } from "./gate.js";
+import { checkConnections, clearMessage, gates, printErrors, showTimedMessage } from "./gate.js";
 import { computeAnd, computeOr, computeXor } from "./validator.js";
 
 ("use strict");
@@ -215,7 +215,6 @@ export function getOutputFA(gate, pos) {
   }
   // But if the gate is not an FA, but an input bit, then return the value of the input
   else {
-    console.log(gate, pos);
     return gate.output;
   }
 }
@@ -280,15 +279,12 @@ export function checkConnectionsFA() {
     if (gate.isInput) {
       if (gate.isConnected === false || gate.outputs.length === 0) {
         printErrors("Highlighted component not connected properly\n", id);
-        console.log("hey3");
         return false;
       }
     }
     if (gate.isOutput) {
       if (gate.inputs.length === 0) {
-        console.log(gate.inputs);
         printErrors("Highlighted component not connected properly\n", id);
-        console.log("hey4");
         return false;
       }
     }
@@ -299,7 +295,7 @@ export function checkConnectionsFA() {
 
 // Simulates the circuit
 export function simulateFA() {
-  clearResult();
+  clearMessage();
   if (!checkConnectionsFA()) {
     return;
   }
@@ -335,11 +331,7 @@ export function simulateFA() {
   }
 
   // Displays message confirming Simulation completion
-  let message = "Simulation has finished";
-  const result = document.getElementById("result");
-  result.innerHTML += message;
-  result.className = "success-message";
-  setTimeout(clearResult, 2000);
+  showTimedMessage("Simulation has finished");
 }
 
 export function getResultAS(node) {
@@ -386,7 +378,7 @@ export function getResultAS(node) {
 
 // Simulates the adder-subtractor circuit
 export function simulateAS() {
-  clearResult();
+  clearMessage();
   if (!checkConnectionsFA() || !checkConnections()) {
     return;
   }
@@ -413,7 +405,6 @@ export function simulateAS() {
 
   for (let key in finalOutputs) {
     let element = document.getElementById(key);
-    console.log(finalOutputs[key]);
     gates[key].output = getOutputFA(finalOutputs[key][0], finalOutputs[key][1]);
     if (gates[key].output) {
       element.className = "high";
@@ -425,11 +416,7 @@ export function simulateAS() {
   }
 
   // Displays message confirming Simulation completion
-  let message = "Simulation has finished";
-  const result = document.getElementById("result");
-  result.innerHTML += message;
-  result.className = "success-message";
-  setTimeout(clearResult, 2000);
+  showTimedMessage("Simulation has finished");
 }
 
 // Simulates the circuit for given fulladders and gates; Used for testing the circuit for all values
@@ -542,13 +529,13 @@ export function deleteFA(id) {
         continue;
       }
       if (fullAdder[key].a0[0] === fa) {
-        fullAdder[key].a0 = null;
+        fullAdder[key].a0 = [];
       }
       if (fullAdder[key].b0[0] === fa) {
-        fullAdder[key].b0 = null;
+        fullAdder[key].b0 = [];
       }
       if (fullAdder[key].cin[0] === fa) {
-        fullAdder[key].cin = null;
+        fullAdder[key].cin = [];
       }
       if (fullAdder[key].outCout.includes(fa)) {
         fullAdder[key].removeoutCout(fa);
